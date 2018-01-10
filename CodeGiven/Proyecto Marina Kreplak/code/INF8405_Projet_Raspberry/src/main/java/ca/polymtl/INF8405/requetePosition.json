@@ -1,0 +1,9 @@
+{
+  "considerIp": "false",
+  "wifiAccessPoints": [
+    {
+        "macAddress": "40:A5:EF:0E:D7:10"
+    }
+
+  ]
+}

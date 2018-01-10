@@ -1,0 +1,13 @@
+curl -d @requetePosition.json -H "Content-Type: application/json" -i "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyD782q3neKmVoL7XnhYTw-qz1GOt1kYE5E"
+
+
+
+
+curl 'https://testfirebase-b8c4a.firebaseio.com/marcheArriere.json'
+
+
+curl -X PUT -d 'true' 'https://testfirebase-b8c4a.firebaseio.com/marcheArriere.json'
+
+
+//Empty POST
+curl -d @ "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyD782q3neKmVoL7XnhYTw-qz1GOt1kYE5E" -o localisation.json
