@@ -36,6 +36,10 @@ public class VideoActivity extends Activity {
     double[] gravity = {0, 0, 0};
     double[] linear_acceleration = {0, 0, 0};
     double alpha = 0.8;
+    boolean firstTime = false;
+    double posX = 0;
+    double posY = 0;
+    double posZ = 0;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,9 +101,22 @@ public class VideoActivity extends Activity {
             linear_acceleration[1] = event.values[1] ;//- gravity[1];
             linear_acceleration[2] = event.values[2] ;//- gravity[2];
 
-            Log.d("X", "X : " + (int)linear_acceleration[0] + " m/s^2");
-            Log.d("Y", "Y : " + (int)linear_acceleration[1] + " m/s^2");
-            Log.d("Z", "Z : " + (int)linear_acceleration[2] + " m/s^2");
+            if (firstTime == false){
+                posX = linear_acceleration[0];
+                posY = linear_acceleration[1];
+                posZ = linear_acceleration[2];
+                firstTime = true;
+            }
+
+            //Display acceleration in console by taking into account the relative position
+            Log.d("X", "X : " + (int)(posX - linear_acceleration[0]) + " m/s^2");
+            Log.d("Y", "Y : " + (int)(posY - linear_acceleration[1]) + " m/s^2");
+            Log.d("Z", "Z : " + (int)(posZ - linear_acceleration[2]) + " m/s^2");
+
+            //Display normal acceleration
+            //Log.d("X", "X : " + (int)linear_acceleration[0] + " m/s^2");
+            //Log.d("Y", "Y : " + (int)linear_acceleration[1] + " m/s^2");
+            //Log.d("Z", "Z : " + (int)linear_acceleration[2] + " m/s^2");
 
             //textAccesX.setText("X : " + (int)linear_acceleration[0] + " m/s^2");
             //textAccesY.setText("Y : " + (int)linear_acceleration[1] + " m/s^2");
