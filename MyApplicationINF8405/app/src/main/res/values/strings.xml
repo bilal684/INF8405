@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">My Application INF8405</string>
+    <!--<string name="accelerometer">Accelerometer</string>
+    <string name="accesX">accesX</string>
+    <string name="accesY">accesY</string>
+    <string name="accesZ">accesZ</string>-->
 </resources>
