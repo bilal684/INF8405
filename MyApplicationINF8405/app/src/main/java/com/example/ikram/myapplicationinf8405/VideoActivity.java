@@ -32,14 +32,12 @@ public class VideoActivity extends Activity {
     SensorManager sensorManager;
     Sensor sensorAccelerometer;
 
-    //assign initial values to gravity, acceleration and alpha
+    //assign initial values to gravity, acceleration, alpha, first time sensor change, initial device position
     double[] gravity = {0, 0, 0};
     double[] linear_acceleration = {0, 0, 0};
     double alpha = 0.8;
     boolean firstTime = false;
-    double posX = 0;
-    double posY = 0;
-    double posZ = 0;
+    double[] posXYZ = {0, 0, 0};
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,17 +99,37 @@ public class VideoActivity extends Activity {
             linear_acceleration[1] = event.values[1] ;//- gravity[1];
             linear_acceleration[2] = event.values[2] ;//- gravity[2];
 
+            // if first time sensor change, keep initial device position
             if (firstTime == false){
-                posX = linear_acceleration[0];
-                posY = linear_acceleration[1];
-                posZ = linear_acceleration[2];
+                posXYZ[0] = linear_acceleration[0];  // initial X
+                posXYZ[1] = linear_acceleration[1];  // initial Y
+                posXYZ[2] = linear_acceleration[2];  // initial Z
                 firstTime = true;
             }
 
-            //Display acceleration in console by taking into account the relative position
-            Log.d("X", "X : " + (int)(posX - linear_acceleration[0]) + " m/s^2");
-            Log.d("Y", "Y : " + (int)(posY - linear_acceleration[1]) + " m/s^2");
-            Log.d("Z", "Z : " + (int)(posZ - linear_acceleration[2]) + " m/s^2");
+            //loop acceleration in XYZ
+            for (int i = 0; i < linear_acceleration.length; i++){
+
+                // find the max value between the new position and the initial device position,
+                // calculate the difference between them
+                double m = Math.max(linear_acceleration[i], posXYZ[i]);
+                double sendValue;
+
+                if (m == linear_acceleration[i]){
+                    sendValue = m - posXYZ[i];
+                }
+                else{
+                    sendValue = m - linear_acceleration[i];
+                }
+
+                // display the acceleration in negative value or in positive value depending of the position
+                if(linear_acceleration[i] < posXYZ[i]){
+                    Log.d("direction", "pos " + i + " : " + (int)(sendValue * -1) + " m/s^2");
+                }
+                else{
+                    Log.d("direction", "pos " + i + " : " + (int)sendValue + " m/s^2");
+                }
+            }
 
             //Display normal acceleration
             //Log.d("X", "X : " + (int)linear_acceleration[0] + " m/s^2");
