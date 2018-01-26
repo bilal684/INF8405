@@ -25,17 +25,12 @@ public class VideoActivity extends Activity {
     private VideoView mv;
     String URL = "";
 
-    //declare accelerometer text view
-    //TextView textAccesX, textAccesY, textAccesZ;
-
-    //declare sensors
+    //Declare sensors
     SensorManager sensorManager;
     Sensor sensorAccelerometer;
 
-    //assign initial values to gravity, acceleration, alpha, first time sensor change, initial device position
-    double[] gravity = {0, 0, 0};
+    //Assign initial values to acceleration, first time sensor change, initial device position
     double[] linear_acceleration = {0, 0, 0};
-    double alpha = 0.8;
     boolean firstTime = false;
     double[] posXYZ = {0, 0, 0};
 
@@ -46,14 +41,9 @@ public class VideoActivity extends Activity {
         mv = new VideoView(this);
         setContentView(mv);
 
-        //set up sensors and accelerometer
+        //Set up sensors and accelerometer
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensorAccelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-
-        //get the text view of X,Y,Z
-        /*textAccesX = findViewById(R.id.accesX);
-        textAccesY = findViewById(R.id.accesY);
-        textAccesZ = findViewById(R.id.accesZ);*/
 
         Bundle extras = getIntent().getExtras();
         if (extras != null && !extras.getString("ip").equals("")) {
@@ -77,29 +67,24 @@ public class VideoActivity extends Activity {
         finish();
     }
 
-    //On stop , unregister accelerometer listener
+    //On stop, unregister accelerometer listener
     public void onStop() {
         super.onStop();
         sensorManager.unregisterListener(accelerometerListener);
     }
 
-    //Accelerometer listener, set the values to the text view
+    //Accelerometer listener, set the values
     public SensorEventListener accelerometerListener = new SensorEventListener() {
         public void onAccuracyChanged(Sensor sensor, int acc) { }
 
         public void onSensorChanged(SensorEvent event) {
 
-            // Isolate the force of gravity with the low-pass filter.
-            gravity[0] = alpha * gravity[0] + (1 - alpha) * event.values[0];
-            gravity[1] = alpha * gravity[1] + (1 - alpha) * event.values[1];
-            gravity[2] = alpha * gravity[2] + (1 - alpha) * event.values[2];
+            // Get the acceleration from sensors. Raw data
+            linear_acceleration[0] = event.values[0] ;
+            linear_acceleration[1] = event.values[1] ;
+            linear_acceleration[2] = event.values[2] ;
 
-            // Remove the gravity contribution with the high-pass filter.
-            linear_acceleration[0] = event.values[0] ;//- gravity[0];
-            linear_acceleration[1] = event.values[1] ;//- gravity[1];
-            linear_acceleration[2] = event.values[2] ;//- gravity[2];
-
-            // if first time sensor change, keep initial device position
+            // If first time sensor change, keep initial device position
             if (firstTime == false){
                 posXYZ[0] = linear_acceleration[0];  // initial X
                 posXYZ[1] = linear_acceleration[1];  // initial Y
@@ -107,11 +92,11 @@ public class VideoActivity extends Activity {
                 firstTime = true;
             }
 
-            //loop acceleration in XYZ
+            //Loop acceleration in XYZ
             for (int i = 0; i < linear_acceleration.length; i++){
 
-                // find the max value between the new position and the initial device position,
-                // calculate the difference between them
+                // Find the max value between the new position and the initial device position
+                // Calculate the difference between them
                 double m = Math.max(linear_acceleration[i], posXYZ[i]);
                 double sendValue;
 
@@ -130,15 +115,6 @@ public class VideoActivity extends Activity {
                     Log.d("direction", "pos " + i + " : " + (int)sendValue + " m/s^2");
                 }
             }
-
-            //Display normal acceleration
-            //Log.d("X", "X : " + (int)linear_acceleration[0] + " m/s^2");
-            //Log.d("Y", "Y : " + (int)linear_acceleration[1] + " m/s^2");
-            //Log.d("Z", "Z : " + (int)linear_acceleration[2] + " m/s^2");
-
-            //textAccesX.setText("X : " + (int)linear_acceleration[0] + " m/s^2");
-            //textAccesY.setText("Y : " + (int)linear_acceleration[1] + " m/s^2");
-            //textAccesZ.setText("Z : " + (int)linear_acceleration[2] + " m/s^2");
         }
     };
 
