@@ -37,6 +37,13 @@ public class VideoActivity extends Activity {
     double maxAcceleration;
     double minAcceleration;
 
+    // degree to divide acceleration (speed)
+    double degree = 5;
+
+    // max degree and min degree
+    double maxDegree;
+    double minDegree;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -61,6 +68,10 @@ public class VideoActivity extends Activity {
             minAcceleration = extras.getDouble("minAcceleration");
             posXYZ = extras.getDoubleArray("posXYZ");
         }
+
+        // Setup degree with max and min acceleration
+        minDegree = minAcceleration/degree;
+        maxDegree = maxAcceleration/degree;
 
         new DoRead().execute(URL);
     }
@@ -110,11 +121,43 @@ public class VideoActivity extends Activity {
                 }
 
                 // display the acceleration in negative value or in positive value depending of the position
+                int nbrSendValue;
                 if(linear_acceleration[i] < posXYZ[i]){
-                    Log.d("direction", "pos " + i + " : " + (int)(sendValue * -1) + " m/s^2");
+                    //Log.d("direction", "pos " + i + " : " + (int)(sendValue * -1) + " m/s^2");
+
+                    if(i == 1){
+                        nbrSendValue = (int) Math.round(sendValue/maxDegree);
+
+                        for(int j = 0; j < nbrSendValue; j++){
+                            Log.d("direction", "a");
+                        }
+                    }
+                    else{
+                        nbrSendValue = (int) Math.round(sendValue/minDegree * -1); // positive/negative = negative, so multiply -1
+
+                        for(int j = 0; j < nbrSendValue; j++){
+                            Log.d("direction", "s");
+                        }
+                    }
+
                 }
                 else{
-                    Log.d("direction", "pos " + i + " : " + (int)sendValue + " m/s^2");
+                    //Log.d("direction", "pos " + i + " : " + (int)sendValue + " m/s^2");
+
+                    if(i == 1){
+                        nbrSendValue = (int) Math.round(sendValue/maxDegree);
+
+                        for(int j = 0; j < nbrSendValue; j++){
+                            Log.d("direction", "d");
+                        }
+                    }
+                    else{
+                        nbrSendValue = (int) Math.round(sendValue/maxDegree);
+
+                        for(int j = 0; j < nbrSendValue; j++){
+                            Log.d("direction", "w");
+                        }
+                    }
                 }
             }
         }

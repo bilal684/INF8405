@@ -68,8 +68,8 @@ public class CalibrationActivity extends AppCompatActivity {
         buttonMin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                textMin.setText(String.valueOf(relative_linear_acceleration[0]));
-                min_acceleration = relative_linear_acceleration[0];
+                textMin.setText(String.valueOf(relative_linear_acceleration[2]));
+                min_acceleration = relative_linear_acceleration[2];
                 buttonReset.setEnabled(true);
 
                 if (!textMin.getText().toString().equals("0.0") && !textMax.getText().toString().equals("0.000")) {
@@ -82,8 +82,8 @@ public class CalibrationActivity extends AppCompatActivity {
         buttonMax.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                textMax.setText(String.valueOf(relative_linear_acceleration[0]));
-                max_acceleration = relative_linear_acceleration[0];
+                textMax.setText(String.valueOf(relative_linear_acceleration[2]));
+                max_acceleration = relative_linear_acceleration[2];
                 buttonReset.setEnabled(true);
 
                 if (!textMin.getText().toString().equals("0.000") && !textMax.getText().toString().equals("0.0")) {
@@ -194,17 +194,5 @@ public class CalibrationActivity extends AppCompatActivity {
             }
         }
     };
-
-    public double[] getInitialPosition(){
-        return posXYZ;
-    }
-
-    public double getMinAcceleration(){
-        return min_acceleration;
-    }
-
-    public double getMaxAcceleration(){
-        return max_acceleration;
-    }
 
 }
