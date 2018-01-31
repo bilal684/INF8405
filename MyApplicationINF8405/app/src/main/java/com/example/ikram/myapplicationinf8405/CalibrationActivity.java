@@ -21,11 +21,17 @@ public class CalibrationActivity extends AppCompatActivity {
     boolean firstTime = false;
     double[] posXYZ = {0, 0, 0};
     double[] linear_acceleration = {0, 0, 0};
+    double[] relative_linear_acceleration = {0, 0, 0};
+
+    // The min and max acceleration for the x axis.
+    double max_acceleration = 0.000;
+    double min_acceleration = 0.000;
 
     // Buttons
     Button buttonMin = findViewById(R.id.buttonMin);
     Button buttonMax = findViewById(R.id.buttonMax);
     Button buttonStart = findViewById(R.id.buttonStart);
+    Button buttonReset = findViewById(R.id.buttonReset);
 
     // TextViews
     TextView textMin, textMax;
@@ -48,7 +54,8 @@ public class CalibrationActivity extends AppCompatActivity {
         buttonMin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                textMin.setText(String.valueOf(linear_acceleration[0]));
+                textMin.setText(String.valueOf(relative_linear_acceleration[0]));
+                min_acceleration = relative_linear_acceleration[0];
             }
         });
 
@@ -56,7 +63,8 @@ public class CalibrationActivity extends AppCompatActivity {
         buttonMax.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                textMin.setText(String.valueOf(linear_acceleration[0]));
+                textMax.setText(String.valueOf(relative_linear_acceleration[0]));
+                max_acceleration = relative_linear_acceleration[0];
             }
         });
 
@@ -65,6 +73,18 @@ public class CalibrationActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // TODO Implement start button
+            }
+        });
+
+        buttonReset = findViewById(R.id.buttonReset);
+        buttonReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                min_acceleration = 0.000;
+                max_acceleration = 0.000;
+                firstTime = false;
+                textMax.setText("0.000");
+                textMin.setText("0.000");
             }
         });
     }
@@ -123,11 +143,13 @@ public class CalibrationActivity extends AppCompatActivity {
                 // display the acceleration in negative value or in positive value depending of the position
                 if(linear_acceleration[i] < posXYZ[i]){
                     //Log.d("direction", "pos " + i + " : " + (int)(sendValue * -1) + " m/s^2");
-                    linear_acceleration[i] = sendValue * -1;
+                    sendValue = sendValue * -1;
+                    relative_linear_acceleration[i] = sendValue;
                 }
                 else{
                     //Log.d("direction", "pos " + i + " : " + (int)sendValue + " m/s^2");
-                    linear_acceleration[i] = sendValue * 1;
+                    sendValue = sendValue * 1;
+                    relative_linear_acceleration[i] = sendValue;
                 }
             }
         }
@@ -137,8 +159,12 @@ public class CalibrationActivity extends AppCompatActivity {
         return posXYZ;
     }
 
-    public double[] getLinearAcceleration(){
-        return linear_acceleration;
+    public double getMinAcceleration(){
+        return min_acceleration;
+    }
+
+    public double getMaxAcceleration(){
+        return max_acceleration;
     }
 
 }

@@ -9,19 +9,19 @@
     tools:ignore="MergeRootFrame" >
 
         <Button
-            android:id="@+id/connexion"
+            android:id="@+id/buttonCalibrate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:text="@string/live_stream_ar_solutions"
-            android:onClick="Connexion"/>
+            android:onClick="Connexion"
+            android:text="@string/calibrate" />
 
         <EditText
-            android:id="@+id/adressIP"
+            android:id="@+id/adresseIPText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/connexion"
+            android:layout_above="@+id/buttonCalibrate"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="34dp"
             android:ems="10"
@@ -31,7 +31,7 @@
             android:id="@+id/textView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/adressIP"
+            android:layout_above="@+id/adresseIPText"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="15dp"
             android:text="@string/adresse_ip_ou_le_nom_de_domaine_de_la_cam_ra_ip" />

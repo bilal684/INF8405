@@ -9,4 +9,6 @@
     <string name="fix_max">Fix Max.</string>
     <string name="_0_000">0.000</string>
     <string name="start">Start</string>
+    <string name="reset">Reset</string>
+    <string name="calibrate">Calibrate</string>
 </resources>
