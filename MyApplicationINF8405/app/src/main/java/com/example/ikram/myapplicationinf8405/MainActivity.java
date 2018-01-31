@@ -9,7 +9,6 @@ import android.widget.EditText;
 
 public class MainActivity extends AppCompatActivity {
 
-
     Button connexion;
     EditText adresseIP ;
     String adresseIp;
@@ -19,24 +18,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ///WebView webView =new WebView(this);
+        //WebView webView =new WebView(this);
         //webView.loadUrl("https://www.youtube.com/watch?v=8V-XBA2qAKY ");
         connexion = ((Button) this.findViewById(R.id.connexion));
-        adresseIP=((EditText)this.findViewById(R.id.adressIP)) ;
-
-
-
+        adresseIP = ((EditText) this.findViewById(R.id.adressIP));
     }
 
-
     public void Connexion (View view){
-
-            adresseIp =adresseIP.getText().toString() ;
+            adresseIp = adresseIP.getText().toString() ;
             Intent i = new Intent(this, VideoActivity.class);
-            i.putExtra("ip",adresseIp) ;
+            i.putExtra("ip", adresseIp) ;
             startActivity(i);
-
-
     }
 
 }
