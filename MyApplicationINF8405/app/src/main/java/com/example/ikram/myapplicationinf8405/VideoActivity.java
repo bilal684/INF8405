@@ -31,8 +31,11 @@ public class VideoActivity extends Activity {
 
     //Assign initial values to acceleration, first time sensor change, initial device position
     double[] linear_acceleration = {0, 0, 0};
-    boolean firstTime = false;
     double[] posXYZ = {0, 0, 0};
+
+    // Max acceleration and Min acceleration
+    double maxAcceleration;
+    double minAcceleration;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,11 +48,18 @@ public class VideoActivity extends Activity {
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensorAccelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
+        //get extras passed from previous activity
         Bundle extras = getIntent().getExtras();
         if (extras != null && !extras.getString("ip").equals("")) {
             URL = extras.getString("ip");
         } else {
             URL = "http://webcam.aui.ma/axis-cgi/mjpg/video.cgi?resolution=CIF&amp";
+        }
+
+        if(extras != null){
+            maxAcceleration = extras.getDouble("maxAcceleration");
+            minAcceleration = extras.getDouble("minAcceleration");
+            posXYZ = extras.getDoubleArray("posXYZ");
         }
 
         new DoRead().execute(URL);
@@ -83,14 +93,6 @@ public class VideoActivity extends Activity {
             linear_acceleration[0] = event.values[0] ;
             linear_acceleration[1] = event.values[1] ;
             linear_acceleration[2] = event.values[2] ;
-
-            // If first time sensor change, keep initial device position
-            if (firstTime == false){
-                posXYZ[0] = linear_acceleration[0];  // initial X
-                posXYZ[1] = linear_acceleration[1];  // initial Y
-                posXYZ[2] = linear_acceleration[2];  // initial Z
-                firstTime = true;
-            }
 
             //Loop acceleration in XYZ
             for (int i = 0; i < linear_acceleration.length; i++){

@@ -20,11 +20,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CalibrationActivity"></activity>
+        <activity android:name=".CalibrationActivity"
+                  android:screenOrientation="landscape">
+        </activity>
         <activity
             android:name=".VideoActivity"
-            android:screenOrientation="landscape"></activity>
-        <activity android:name=".VideoStreamActivity" />
+            android:screenOrientation="landscape">
+        </activity>
+        <activity android:name=".VideoStreamActivity">
+        </activity>
 
     </application>
 

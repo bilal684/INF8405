@@ -22,31 +22,16 @@ public class MainActivity extends AppCompatActivity {
         adresseIPText = this.findViewById(R.id.adresseIPText);
         adresseIP = adresseIPText.getText().toString();
 
-        calibrateButton = findViewById(R.id.buttonCalibrate);
+        calibrateButton = this.findViewById(R.id.buttonCalibrate);
         calibrateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent robotActivity = new Intent(MainActivity.this, com.example.ikram.myapplicationinf8405.CalibrationActivity.class);
+                Intent robotActivity = new Intent(MainActivity.this, CalibrationActivity.class);
+                robotActivity.putExtra("ip", adresseIP);
                 startActivity(robotActivity);
             }
         });
-
-        //WebView webView =new WebView(this);
-        //webView.loadUrl("https://www.youtube.com/watch?v=8V-XBA2qAKY ");
-        //connexion = ((Button) this.findViewById(R.id.connexion));
-        //adresseIPText = ((EditText) this.findViewById(R.id.adressIP));
     }
-
-//    public void Connexion (View view){
-//            adresseIP = adresseIPText.getText().toString() ;
-//            Intent i = new Intent(this, VideoActivity.class);
-//            i.putExtra("ip", adresseIP) ;
-//            startActivity(i);
-//    }
-
-//    public String getAdresseIP(){
-//        return adresseIP;
-//    }
 
 }
 

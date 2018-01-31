@@ -1,6 +1,7 @@
 package com.example.ikram.myapplicationinf8405;
 
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.webkit.WebView;
 
 public class CalibrationActivity extends AppCompatActivity {
 
@@ -23,15 +25,15 @@ public class CalibrationActivity extends AppCompatActivity {
     double[] linear_acceleration = {0, 0, 0};
     double[] relative_linear_acceleration = {0, 0, 0};
 
+    // Buttons
+    Button buttonMin;
+    Button buttonMax;
+    Button buttonStart;
+    Button buttonReset;
+
     // The min and max acceleration for the x axis.
     double max_acceleration = 0.000;
     double min_acceleration = 0.000;
-
-    // Buttons
-    Button buttonMin = findViewById(R.id.buttonMin);
-    Button buttonMax = findViewById(R.id.buttonMax);
-    Button buttonStart = findViewById(R.id.buttonStart);
-    Button buttonReset = findViewById(R.id.buttonReset);
 
     // TextViews
     TextView textMin, textMax;
@@ -40,6 +42,18 @@ public class CalibrationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calibration);
+
+        // Create WebView for URL
+        //WebView webView =new WebView(this);
+        //webView.loadUrl("https://www.youtube.com/watch?v=8V-XBA2qAKY ");
+
+        // Buttons
+        buttonMin = this.findViewById(R.id.buttonMin);
+        buttonMax = this.findViewById(R.id.buttonMax);
+        buttonStart = this.findViewById(R.id.buttonStart);
+        buttonReset = this.findViewById(R.id.buttonReset);
+        buttonReset.setEnabled(false);
+        buttonStart.setEnabled(false);
 
         //Set up sensors and accelerometer
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -56,6 +70,11 @@ public class CalibrationActivity extends AppCompatActivity {
             public void onClick(View view) {
                 textMin.setText(String.valueOf(relative_linear_acceleration[0]));
                 min_acceleration = relative_linear_acceleration[0];
+                buttonReset.setEnabled(true);
+
+                if (!textMin.getText().toString().equals("0.0") && !textMax.getText().toString().equals("0.000")) {
+                    buttonStart.setEnabled(true);
+                }
             }
         });
 
@@ -65,6 +84,11 @@ public class CalibrationActivity extends AppCompatActivity {
             public void onClick(View view) {
                 textMax.setText(String.valueOf(relative_linear_acceleration[0]));
                 max_acceleration = relative_linear_acceleration[0];
+                buttonReset.setEnabled(true);
+
+                if (!textMin.getText().toString().equals("0.000") && !textMax.getText().toString().equals("0.0")) {
+                    buttonStart.setEnabled(true);
+                }
             }
         });
 
@@ -72,7 +96,21 @@ public class CalibrationActivity extends AppCompatActivity {
         buttonStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO Implement start button
+                Intent i = new Intent(CalibrationActivity.this, VideoActivity.class);
+
+                Bundle extras = getIntent().getExtras();
+                String adresseIP;
+                if (extras != null && !extras.getString("ip").equals("")) {
+                    adresseIP = extras.getString("ip");
+                } else {
+                    adresseIP = "http://webcam.aui.ma/axis-cgi/mjpg/video.cgi?resolution=CIF&amp";
+                }
+
+                i.putExtra("ip", adresseIP);
+                i.putExtra("maxAcceleration", max_acceleration);
+                i.putExtra("minAcceleration", min_acceleration);
+                i.putExtra("posXYZ", posXYZ);
+                startActivity(i);
             }
         });
 
@@ -85,6 +123,8 @@ public class CalibrationActivity extends AppCompatActivity {
                 firstTime = false;
                 textMax.setText("0.000");
                 textMin.setText("0.000");
+                buttonStart.setEnabled(false);
+                buttonReset.setEnabled(false);
             }
         });
     }
