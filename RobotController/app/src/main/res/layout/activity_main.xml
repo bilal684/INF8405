@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_server"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/connect_server"
+        android:layout_width="131dp"
+        android:layout_height="101dp"
+        android:onClick="W"
+        android:text="W" />
+
+    <Button
+        android:layout_width="130dp"
+        android:layout_height="84dp"
+        android:onClick="S"
+        android:text="S" />
+
+    <Button
+        android:layout_width="131dp"
+        android:layout_height="85dp"
+        android:onClick="D"
+        android:text="D" />
+
+    <Button
+        android:layout_width="130dp"
+        android:layout_height="85dp"
+        android:onClick="A"
+        android:text="A" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="84dp"
+        android:onClick="X"
+        android:text="STOP" />
+
+</LinearLayout>
