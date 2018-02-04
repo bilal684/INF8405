@@ -36,7 +36,7 @@ public class CalibrationActivity extends AppCompatActivity {
     double min_acceleration = 0.000;
 
     // TextViews
-    TextView textMin, textMax;
+    TextView textMin, textMax, textPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +52,7 @@ public class CalibrationActivity extends AppCompatActivity {
         buttonMax = this.findViewById(R.id.buttonMax);
         buttonStart = this.findViewById(R.id.buttonStart);
         buttonReset = this.findViewById(R.id.buttonReset);
-        buttonReset.setEnabled(false);
+        //buttonReset.setEnabled(false);
         buttonStart.setEnabled(false);
 
         //Set up sensors and accelerometer
@@ -62,15 +62,16 @@ public class CalibrationActivity extends AppCompatActivity {
         // Set TextView
         textMin = findViewById(R.id.minValue);
         textMax = findViewById(R.id.maxValue);
+        textPosition = findViewById(R.id.positionValue);
 
         // Set event listeners for buttons
         buttonMin = findViewById(R.id.buttonMin);
         buttonMin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                textMin.setText(String.valueOf(relative_linear_acceleration[2]));
-                min_acceleration = relative_linear_acceleration[2];
-                buttonReset.setEnabled(true);
+                textMin.setText(String.valueOf(relative_linear_acceleration[0]));
+                min_acceleration = relative_linear_acceleration[0];
+                //buttonReset.setEnabled(true);
 
                 if (!textMin.getText().toString().equals("0.0") && !textMax.getText().toString().equals("0.000")) {
                     buttonStart.setEnabled(true);
@@ -82,9 +83,9 @@ public class CalibrationActivity extends AppCompatActivity {
         buttonMax.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                textMax.setText(String.valueOf(relative_linear_acceleration[2]));
-                max_acceleration = relative_linear_acceleration[2];
-                buttonReset.setEnabled(true);
+                textMax.setText(String.valueOf(relative_linear_acceleration[0]));
+                max_acceleration = relative_linear_acceleration[0];
+                //buttonReset.setEnabled(true);
 
                 if (!textMin.getText().toString().equals("0.000") && !textMax.getText().toString().equals("0.0")) {
                     buttonStart.setEnabled(true);
@@ -124,7 +125,7 @@ public class CalibrationActivity extends AppCompatActivity {
                 textMax.setText("0.000");
                 textMin.setText("0.000");
                 buttonStart.setEnabled(false);
-                buttonReset.setEnabled(false);
+                //buttonReset.setEnabled(false);
             }
         });
     }
@@ -191,6 +192,19 @@ public class CalibrationActivity extends AppCompatActivity {
                     sendValue = sendValue * 1;
                     relative_linear_acceleration[i] = sendValue;
                 }
+
+                if(relative_linear_acceleration[0] > 0)
+                {
+                    buttonMin.setEnabled(true);
+                    buttonMax.setEnabled(false);
+                }
+                else
+                {
+                    buttonMin.setEnabled(false);
+                    buttonMax.setEnabled(true);
+                }
+
+                textPosition.setText(String.valueOf(relative_linear_acceleration[0]));
             }
         }
     };
