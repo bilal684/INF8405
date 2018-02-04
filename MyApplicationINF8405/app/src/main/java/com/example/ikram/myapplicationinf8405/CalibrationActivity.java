@@ -172,9 +172,9 @@ public class CalibrationActivity extends AppCompatActivity {
                 }
 
                 // Round to 3 decimal places
-                sendValue = sendValue * 1000;
-                sendValue = Math.round(sendValue);
-                sendValue = sendValue / 1000;
+//                sendValue = sendValue * 1000;
+//                sendValue = Math.round(sendValue);
+//                sendValue = sendValue / 1000;
 
                 // display the acceleration in negative value or in positive value depending of the position
                 if(linear_acceleration[i] < posXYZ[i]){
@@ -198,7 +198,6 @@ public class CalibrationActivity extends AppCompatActivity {
                     buttonMin.setEnabled(false);
                     buttonMax.setEnabled(true);
                 }
-
                 textPosition.setText(String.valueOf(relative_linear_acceleration[0]));
             }
         }

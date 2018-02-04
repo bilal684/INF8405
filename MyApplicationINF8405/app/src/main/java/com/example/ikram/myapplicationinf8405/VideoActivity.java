@@ -37,8 +37,13 @@ public class VideoActivity extends Activity {
     double maxAcceleration;
     double minAcceleration;
 
-    // number of interval and
-    int numberOfInterval = 35;
+    // number of interval and intervals
+    double numberOfInterval = 35.0;
+
+    double minIntervalValue;
+    double maxIntervalValue;
+
+    double lastValue = 0.0;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,18 +70,9 @@ public class VideoActivity extends Activity {
             posXYZ = extras.getDoubleArray("posXYZ");
         }
 
-        // Setup interval values
-        double minIntervalValue = maxAcceleration/numberOfInterval;
-        double maxIntervalValue = minAcceleration/numberOfInterval;
-
-        ArrayList<Double> minInterval = new ArrayList<>();
-        ArrayList<Double> maxInterval = new ArrayList<>();
-
-        for (int i = 0; i < numberOfInterval; i++)
-        {
-            minInterval.add(i * minIntervalValue);
-            maxInterval.add(i * maxIntervalValue);
-        }
+        numberOfInterval = 35.0;
+        minIntervalValue = minAcceleration/numberOfInterval;
+        maxIntervalValue = maxAcceleration/numberOfInterval;
 
         new DoRead().execute(URL);
     }
@@ -126,35 +122,57 @@ public class VideoActivity extends Activity {
                 }
 
                 if(linear_acceleration[i] < posXYZ[i]){
-                    if(i == 1){
+                    if(i == 1 && sendValue > 2.0){
+                        //TODO Decide value
                         Log.d("direction a", String.valueOf(sendValue));
                     }
                     else if(i == 0)
                     {
                         if (sendValue > maxAcceleration)
                         {
-                            Log.d("direction w", String.valueOf(maxAcceleration));
+                            sendValue = maxAcceleration;
                         }
-                        else
+                        double currentValue = Math.floor(sendValue/maxIntervalValue);
+
+                        if(currentValue != lastValue)
                         {
-                            Log.d("direction w", String.valueOf(sendValue));
+                            if(currentValue > lastValue)
+                            {
+                                Log.d("direction BIG W", String.valueOf(sendValue)  + " " + String.valueOf(lastValue) + " " + String.valueOf(currentValue));
+                            }
+                            else
+                            {
+                                Log.d("direction SMALL w", String.valueOf(sendValue) + " " + String.valueOf(lastValue) + " " + String.valueOf(currentValue));
+                            }
                         }
+                        lastValue = currentValue;
                     }
                 }
                 else{
-                    if(i == 1){
+                    if(i == 1 && sendValue > 2.0){
+                        //TODO Decide value
                         Log.d("direction d", String.valueOf(sendValue));
                     }
                     else if (i == 0)
                     {
                         if (sendValue > minAcceleration)
                         {
-                            Log.d("direction s", String.valueOf(minAcceleration));
+                            sendValue = minAcceleration;
                         }
-                        else
+                        double currentValue = Math.floor(sendValue/minIntervalValue);
+
+                        if(currentValue != lastValue)
                         {
-                            Log.d("direction s", String.valueOf(sendValue));
+                            if(currentValue > lastValue)
+                            {
+                                Log.d("direction BIG S", String.valueOf(sendValue) + " " + String.valueOf(lastValue) + " " + String.valueOf(currentValue));
+                            }
+                            else
+                            {
+                                Log.d("direction SMALL s", String.valueOf(sendValue) + " " + String.valueOf(lastValue) + " " + String.valueOf(currentValue));
+                            }
                         }
+                        lastValue = currentValue;
                     }
                 }
             }
