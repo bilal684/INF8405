@@ -9,7 +9,6 @@ import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.TextView;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -18,6 +17,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 
 public class VideoActivity extends Activity {
     private static final String TAG = "VideoActivity";
@@ -37,12 +37,8 @@ public class VideoActivity extends Activity {
     double maxAcceleration;
     double minAcceleration;
 
-    // degree to divide acceleration (speed)
-    double degree = 35;
-
-    // max degree and min degree
-    double maxDegree;
-    double minDegree;
+    // number of interval and
+    int numberOfInterval = 35;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,9 +65,18 @@ public class VideoActivity extends Activity {
             posXYZ = extras.getDoubleArray("posXYZ");
         }
 
-        // Setup degree with max and min acceleration
-        minDegree = minAcceleration/degree;
-        maxDegree = maxAcceleration/degree;
+        // Setup interval values
+        double minIntervalValue = maxAcceleration/numberOfInterval;
+        double maxIntervalValue = minAcceleration/numberOfInterval;
+
+        ArrayList<Double> minInterval = new ArrayList<>();
+        ArrayList<Double> maxInterval = new ArrayList<>();
+
+        for (int i = 0; i < numberOfInterval; i++)
+        {
+            minInterval.add(i * minIntervalValue);
+            maxInterval.add(i * maxIntervalValue);
+        }
 
         new DoRead().execute(URL);
     }
