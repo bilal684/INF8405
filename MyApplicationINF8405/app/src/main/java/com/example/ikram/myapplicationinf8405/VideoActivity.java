@@ -38,7 +38,7 @@ public class VideoActivity extends Activity {
     double minAcceleration;
 
     // degree to divide acceleration (speed)
-    double degree = 5;
+    double degree = 35;
 
     // max degree and min degree
     double maxDegree;
@@ -120,42 +120,35 @@ public class VideoActivity extends Activity {
                     sendValue = m - linear_acceleration[i];
                 }
 
-                // display the acceleration in negative value or in positive value depending of the position
-                int nbrSendValue;
                 if(linear_acceleration[i] < posXYZ[i]){
-                    //Log.d("direction", "pos " + i + " : " + (int)(sendValue * -1) + " m/s^2");
-
                     if(i == 1){
-                        nbrSendValue = (int) Math.round(sendValue/maxDegree);
-
-                        for(int j = 0; j < nbrSendValue; j++){
-                            Log.d("direction", "a");
+                        Log.d("direction a", String.valueOf(sendValue));
+                    }
+                    else if(i == 0)
+                    {
+                        if (sendValue > maxAcceleration)
+                        {
+                            Log.d("direction w", String.valueOf(maxAcceleration));
+                        }
+                        else
+                        {
+                            Log.d("direction w", String.valueOf(sendValue));
                         }
                     }
-                    else{
-                        nbrSendValue = (int) Math.round(sendValue/minDegree * -1); // positive/negative = negative, so multiply -1
-
-                        for(int j = 0; j < nbrSendValue; j++){
-                            Log.d("direction", "s");
-                        }
-                    }
-
                 }
                 else{
-                    //Log.d("direction", "pos " + i + " : " + (int)sendValue + " m/s^2");
-
                     if(i == 1){
-                        nbrSendValue = (int) Math.round(sendValue/maxDegree);
-
-                        for(int j = 0; j < nbrSendValue; j++){
-                            Log.d("direction", "d");
-                        }
+                        Log.d("direction d", String.valueOf(sendValue));
                     }
-                    else{
-                        nbrSendValue = (int) Math.round(sendValue/maxDegree);
-
-                        for(int j = 0; j < nbrSendValue; j++){
-                            Log.d("direction", "w");
+                    else if (i == 0)
+                    {
+                        if (sendValue > minAcceleration)
+                        {
+                            Log.d("direction s", String.valueOf(minAcceleration));
+                        }
+                        else
+                        {
+                            Log.d("direction s", String.valueOf(sendValue));
                         }
                     }
                 }

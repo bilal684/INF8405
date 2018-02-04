@@ -43,16 +43,11 @@ public class CalibrationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calibration);
 
-        // Create WebView for URL
-        //WebView webView =new WebView(this);
-        //webView.loadUrl("https://www.youtube.com/watch?v=8V-XBA2qAKY ");
-
         // Buttons
         buttonMin = this.findViewById(R.id.buttonMin);
         buttonMax = this.findViewById(R.id.buttonMax);
         buttonStart = this.findViewById(R.id.buttonStart);
         buttonReset = this.findViewById(R.id.buttonReset);
-        //buttonReset.setEnabled(false);
         buttonStart.setEnabled(false);
 
         //Set up sensors and accelerometer
@@ -71,7 +66,6 @@ public class CalibrationActivity extends AppCompatActivity {
             public void onClick(View view) {
                 textMin.setText(String.valueOf(relative_linear_acceleration[0]));
                 min_acceleration = relative_linear_acceleration[0];
-                //buttonReset.setEnabled(true);
 
                 if (!textMin.getText().toString().equals("0.0") && !textMax.getText().toString().equals("0.000")) {
                     buttonStart.setEnabled(true);
@@ -85,7 +79,6 @@ public class CalibrationActivity extends AppCompatActivity {
             public void onClick(View view) {
                 textMax.setText(String.valueOf(relative_linear_acceleration[0]));
                 max_acceleration = relative_linear_acceleration[0];
-                //buttonReset.setEnabled(true);
 
                 if (!textMin.getText().toString().equals("0.000") && !textMax.getText().toString().equals("0.0")) {
                     buttonStart.setEnabled(true);
@@ -97,6 +90,9 @@ public class CalibrationActivity extends AppCompatActivity {
         buttonStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                max_acceleration = max_acceleration * -1; // To remove the negative
+
                 Intent i = new Intent(CalibrationActivity.this, VideoActivity.class);
 
                 Bundle extras = getIntent().getExtras();
@@ -125,7 +121,6 @@ public class CalibrationActivity extends AppCompatActivity {
                 textMax.setText("0.000");
                 textMin.setText("0.000");
                 buttonStart.setEnabled(false);
-                //buttonReset.setEnabled(false);
             }
         });
     }
