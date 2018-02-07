@@ -169,19 +169,23 @@ public class VideoActivity extends Activity {
                         {
                             sendValue = maxAcceleration;
                         }
-                        double currentValue = Math.floor(sendValue/maxIntervalValue);
 
-                        if(currentValue != lastValue)
-                        {
-                            if(currentValue > lastValue)
-                            {
-                                //Log.d("direction BIG W", String.valueOf(sendValue)  + " " + String.valueOf(lastValue) + " " + String.valueOf(currentValue));
-                                clientThread.sendMessage("W");
-                            }
-                            else
-                            {
-                                //Log.d("direction SMALL w", String.valueOf(sendValue) + " " + String.valueOf(lastValue) + " " + String.valueOf(currentValue));
-                                clientThread.sendMessage("w");
+                        double currentValue = sendValue/maxIntervalValue;
+
+                        if (currentValue < 0.5){
+                            clientThread.sendMessage("x");
+                        }
+                        else {
+                            currentValue = Math.floor(currentValue);
+
+                            if (currentValue != lastValue) {
+                                if (currentValue > lastValue) {
+                                    //Log.d("direction BIG W", String.valueOf(sendValue)  + " " + String.valueOf(lastValue) + " " + String.valueOf(currentValue));
+                                    clientThread.sendMessage("W");
+                                } else {
+                                    //Log.d("direction SMALL w", String.valueOf(sendValue) + " " + String.valueOf(lastValue) + " " + String.valueOf(currentValue));
+                                    clientThread.sendMessage("w");
+                                }
                             }
                         }
                         lastValue = currentValue;
@@ -199,19 +203,23 @@ public class VideoActivity extends Activity {
                         {
                             sendValue = minAcceleration;
                         }
-                        double currentValue = Math.floor(sendValue/minIntervalValue);
 
-                        if(currentValue != lastValue)
-                        {
-                            if(currentValue > lastValue)
-                            {
-                                //Log.d("direction BIG S", String.valueOf(sendValue) + " " + String.valueOf(lastValue) + " " + String.valueOf(currentValue));
-                                clientThread.sendMessage("S");
-                            }
-                            else
-                            {
-                                //Log.d("direction SMALL s", String.valueOf(sendValue) + " " + String.valueOf(lastValue) + " " + String.valueOf(currentValue));
-                                clientThread.sendMessage("s");
+                        double currentValue = sendValue/minIntervalValue;
+
+                        if(currentValue < 0.5){
+                            clientThread.sendMessage("x");
+                        }
+                        else {
+                            currentValue = Math.floor(currentValue);
+
+                            if (currentValue != lastValue) {
+                                if (currentValue > lastValue) {
+                                    //Log.d("direction BIG S", String.valueOf(sendValue) + " " + String.valueOf(lastValue) + " " + String.valueOf(currentValue));
+                                    clientThread.sendMessage("S");
+                                } else {
+                                    //Log.d("direction SMALL s", String.valueOf(sendValue) + " " + String.valueOf(lastValue) + " " + String.valueOf(currentValue));
+                                    clientThread.sendMessage("s");
+                                }
                             }
                         }
                         lastValue = currentValue;
