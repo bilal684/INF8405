@@ -18,12 +18,27 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import android.os.StrictMode;
+import java.io.BufferedWriter;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 public class VideoActivity extends Activity {
     private static final String TAG = "VideoActivity";
 
+    // VideoView && URL
     private VideoView mv;
     String URL = "";
+
+    // Server port and thread
+    public static final int SERVERPORT = 9999;
+    public static final String SERVER_IP = "192.168.1.218";
+
+    ClientThread clientThread;
+    Thread thread;
 
     //Declare sensors
     SensorManager sensorManager;
@@ -70,10 +85,21 @@ public class VideoActivity extends Activity {
             posXYZ = extras.getDoubleArray("posXYZ");
         }
 
-        numberOfInterval = 35.0;
         minIntervalValue = minAcceleration/numberOfInterval;
         maxIntervalValue = maxAcceleration/numberOfInterval;
 
+        // Initialize and start thread
+        clientThread = new ClientThread();
+        thread = new Thread(clientThread);
+
+        if (android.os.Build.VERSION.SDK_INT > 9)
+        {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
+        thread.start();
+
+        // Execute URL for video
         new DoRead().execute(URL);
     }
 
@@ -93,6 +119,16 @@ public class VideoActivity extends Activity {
     public void onStop() {
         super.onStop();
         sensorManager.unregisterListener(accelerometerListener);
+    }
+
+    // On destroy, disconnect thread
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (null != clientThread) {
+            clientThread.sendMessage("Disconnect");
+            clientThread = null;
+        }
     }
 
     //Accelerometer listener, set the values
@@ -124,7 +160,8 @@ public class VideoActivity extends Activity {
                 if(linear_acceleration[i] < posXYZ[i]){
                     if(i == 1 && sendValue > 2.0){
                         //TODO Decide value
-                        Log.d("direction a", String.valueOf(sendValue));
+                        //Log.d("direction a", String.valueOf(sendValue));
+                        clientThread.sendMessage("a");
                     }
                     else if(i == 0)
                     {
@@ -138,11 +175,13 @@ public class VideoActivity extends Activity {
                         {
                             if(currentValue > lastValue)
                             {
-                                Log.d("direction BIG W", String.valueOf(sendValue)  + " " + String.valueOf(lastValue) + " " + String.valueOf(currentValue));
+                                //Log.d("direction BIG W", String.valueOf(sendValue)  + " " + String.valueOf(lastValue) + " " + String.valueOf(currentValue));
+                                clientThread.sendMessage("W");
                             }
                             else
                             {
-                                Log.d("direction SMALL w", String.valueOf(sendValue) + " " + String.valueOf(lastValue) + " " + String.valueOf(currentValue));
+                                //Log.d("direction SMALL w", String.valueOf(sendValue) + " " + String.valueOf(lastValue) + " " + String.valueOf(currentValue));
+                                clientThread.sendMessage("w");
                             }
                         }
                         lastValue = currentValue;
@@ -151,7 +190,8 @@ public class VideoActivity extends Activity {
                 else{
                     if(i == 1 && sendValue > 2.0){
                         //TODO Decide value
-                        Log.d("direction d", String.valueOf(sendValue));
+                        //Log.d("direction d", String.valueOf(sendValue));
+                        clientThread.sendMessage("d");
                     }
                     else if (i == 0)
                     {
@@ -165,11 +205,13 @@ public class VideoActivity extends Activity {
                         {
                             if(currentValue > lastValue)
                             {
-                                Log.d("direction BIG S", String.valueOf(sendValue) + " " + String.valueOf(lastValue) + " " + String.valueOf(currentValue));
+                                //Log.d("direction BIG S", String.valueOf(sendValue) + " " + String.valueOf(lastValue) + " " + String.valueOf(currentValue));
+                                clientThread.sendMessage("S");
                             }
                             else
                             {
-                                Log.d("direction SMALL s", String.valueOf(sendValue) + " " + String.valueOf(lastValue) + " " + String.valueOf(currentValue));
+                                //Log.d("direction SMALL s", String.valueOf(sendValue) + " " + String.valueOf(lastValue) + " " + String.valueOf(currentValue));
+                                clientThread.sendMessage("s");
                             }
                         }
                         lastValue = currentValue;
@@ -179,6 +221,7 @@ public class VideoActivity extends Activity {
         }
     };
 
+    // Class for async task of video stream
     public class DoRead extends AsyncTask<String, Void, VideoStreamActivity> {
         protected VideoStreamActivity doInBackground(String... url) {
             HttpResponse res = null;
@@ -207,6 +250,40 @@ public class VideoActivity extends Activity {
             mv.setSource(result);
             mv.setDisplayMode(VideoView.SIZE_BEST_FIT);
             mv.showFps(true);
+        }
+    }
+
+    // source : https://stackoverflow.com/questions/25093546/android-os-networkonmainthreadexception-at-android-os-strictmodeandroidblockgua
+    // source : http://www.coderzheaven.com/2017/05/01/client-server-programming-in-android-send-message-to-the-client-and-back/
+    // Class for client thread with socket to send message
+    class ClientThread implements Runnable {
+
+        private Socket socket;
+
+        @Override
+        public void run() {
+
+            try {
+                InetAddress serverAddr = InetAddress.getByName(SERVER_IP);
+                socket = new Socket(serverAddr, SERVERPORT);
+
+            } catch (UnknownHostException e1) {
+                e1.printStackTrace();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        }
+
+        void sendMessage(String message) {
+            try {
+                if (null != socket) {
+                    PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
+                    out.write(message);
+                    out.flush();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }
