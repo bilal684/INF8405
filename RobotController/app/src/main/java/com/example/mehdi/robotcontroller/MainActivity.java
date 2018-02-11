@@ -15,8 +15,8 @@ import java.net.UnknownHostException;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    public static final int SERVERPORT = 9999;
-    public static final String SERVER_IP = "192.168.1.218";
+    public static final int SERVERPORT = 5050;
+    public static final String SERVER_IP = "132.207.186.11";
 
     ClientThread clientThread;
     Thread thread;
