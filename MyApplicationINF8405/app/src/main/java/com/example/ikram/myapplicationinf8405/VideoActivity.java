@@ -57,8 +57,15 @@ public class VideoActivity extends Activity {
     double maxAcceleration;
     double minAcceleration;
 
+    // Top and bottom interval to send X to the server to stop
+    double topIntervalX;
+    double bottomIntervalX;
+
     // number of interval and intervals
     double numberOfInterval = 35.0;
+
+    // number to divide max and min to set the X range to stop
+    double stopinterval = 4.0;
 
     double minIntervalValue;
     double maxIntervalValue;
@@ -100,6 +107,9 @@ public class VideoActivity extends Activity {
 
         minIntervalValue = minAcceleration/numberOfInterval;
         maxIntervalValue = maxAcceleration/numberOfInterval;
+
+        topIntervalX = maxAcceleration/stopinterval;
+        bottomIntervalX = minAcceleration/stopinterval;
 
         // Initialize and start thread
         clientThread = new ClientThread();
@@ -174,7 +184,7 @@ public class VideoActivity extends Activity {
                     if(i == 1 && sendValue > 2.0){
                         //TODO Decide value
                         //Log.d("direction a", String.valueOf(sendValue));
-                        clientThread.sendMessage("a");
+                        clientThread.sendMessage("d");
                     }
                     else if(i == 0)
                     {
@@ -185,7 +195,7 @@ public class VideoActivity extends Activity {
 
                         double currentValue = sendValue/maxIntervalValue;
 
-                        if (currentValue < 1.5){
+                        if (currentValue < topIntervalX){
                             clientThread.sendMessage("x");
                         }
                         else {
@@ -208,7 +218,7 @@ public class VideoActivity extends Activity {
                     if(i == 1 && sendValue > 2.0){
                         //TODO Decide value
                         //Log.d("direction d", String.valueOf(sendValue));
-                        clientThread.sendMessage("d");
+                        clientThread.sendMessage("a");
                     }
                     else if (i == 0)
                     {
@@ -219,7 +229,7 @@ public class VideoActivity extends Activity {
 
                         double currentValue = sendValue/minIntervalValue;
 
-                        if(currentValue < 1.5){
+                        if(currentValue < bottomIntervalX){
                             clientThread.sendMessage("x");
                         }
                         else {
