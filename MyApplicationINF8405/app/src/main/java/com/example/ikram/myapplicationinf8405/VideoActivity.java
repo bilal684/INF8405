@@ -64,8 +64,8 @@ public class VideoActivity extends Activity {
         super.onCreate(savedInstanceState);
 
 
-        mv = new VideoView(this);
-        setContentView(mv);
+        //mv = new VideoView(this);
+        setContentView(R.layout.activity_video_view);
 
         //Set up sensors and accelerometer
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -73,12 +73,12 @@ public class VideoActivity extends Activity {
 
         //get extras passed from previous activity
         Bundle extras = getIntent().getExtras();
-        if (extras != null && !extras.getString("ip").equals("")) {
+        /*if (extras != null && !extras.getString("ip").equals("")) {
             URL = extras.getString("ip");
         } else {
             URL = "http://webcam.aui.ma/axis-cgi/mjpg/video.cgi?resolution=CIF&amp";
         }
-
+*/
         if(extras != null){
             maxAcceleration = extras.getDouble("maxAcceleration");
             minAcceleration = extras.getDouble("minAcceleration");
@@ -100,7 +100,7 @@ public class VideoActivity extends Activity {
         thread.start();
 
         // Execute URL for video
-        new DoRead().execute(URL);
+        //new DoRead().execute(URL);
     }
 
     //On resume, register accelerometer listener
