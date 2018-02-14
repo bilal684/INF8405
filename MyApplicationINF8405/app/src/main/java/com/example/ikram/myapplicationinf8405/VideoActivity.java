@@ -19,6 +19,11 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import android.os.StrictMode;
+import android.view.Gravity;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -31,11 +36,11 @@ public class VideoActivity extends Activity {
 
     // VideoView && URL
     private VideoView mv;
-    String URL = "";
+    String URL = "http://132.207.186.11:8000";
 
     // Server port and thread
-    public static final int SERVERPORT = 9999;
-    public static final String SERVER_IP = "192.168.1.218";
+    public static final int SERVERPORT = 5050;
+    public static final String SERVER_IP = "132.207.186.11";
 
     ClientThread clientThread;
     Thread thread;
@@ -66,6 +71,14 @@ public class VideoActivity extends Activity {
 
         //mv = new VideoView(this);
         setContentView(R.layout.activity_video_view);
+        WebView webView = (WebView) findViewById(R.id.webView);
+        webView.setWebViewClient(new WebViewClient());
+        WebSettings settings = webView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        webView.setRight(50);
+        webView.loadUrl(URL);
+
+
 
         //Set up sensors and accelerometer
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -172,7 +185,7 @@ public class VideoActivity extends Activity {
 
                         double currentValue = sendValue/maxIntervalValue;
 
-                        if (currentValue < 0.5){
+                        if (currentValue < 1.5){
                             clientThread.sendMessage("x");
                         }
                         else {
@@ -206,7 +219,7 @@ public class VideoActivity extends Activity {
 
                         double currentValue = sendValue/minIntervalValue;
 
-                        if(currentValue < 0.5){
+                        if(currentValue < 1.5){
                             clientThread.sendMessage("x");
                         }
                         else {

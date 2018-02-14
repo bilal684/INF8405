@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.ikram.myapplication_inf8405.VideoViewActivity">
+    android:background="#000000"
+    tools:context="com.example.ikram.myapplicationinf8405.VideoActivity">
 
     <!--<TextView
         android:id="@+id/accelerometerTitle"
@@ -52,4 +53,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.647" />-->
-</android.support.constraint.ConstraintLayout>
+
+    <WebView
+        android:id="@+id/webView"
+        android:layout_marginTop="200px"
+        android:layout_marginLeft="360px"
+        android:layout_width="1310px"
+        android:layout_height="990px" />
+</RelativeLayout>
