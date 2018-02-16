@@ -25,7 +25,8 @@
         </activity>
         <activity
             android:name=".VideoActivity"
-            android:screenOrientation="landscape">
+            android:screenOrientation="landscape"
+            android:keepScreenOn="true">
         </activity>
         <activity android:name=".VideoStreamActivity">
         </activity>

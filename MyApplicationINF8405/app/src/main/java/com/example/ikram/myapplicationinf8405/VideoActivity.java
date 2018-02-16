@@ -40,7 +40,7 @@ public class VideoActivity extends Activity {
 
     // Server port and thread
     public static final int SERVERPORT = 5050;
-    public static final String SERVER_IP = "10.200.11.26";
+    public static final String SERVER_IP = "132.207.186.11";
 
     ClientThread clientThread;
     Thread thread;
