@@ -4,12 +4,28 @@ int E2 = 6;     //M2 Speed Control
 int M1 = 4;    //M1 Direction Control
 int M2 = 7;    //M1 Direction Control
 
+enum State {
+  STOP,
+  FORWARD,
+  BACKWARD,
+  ROT_LEFT_FRONT,
+  ROT_LEFT_BACK,
+  ROT_LEFT_360,
+  ROT_RIGHT_FRONT,
+  ROT_RIGHT_BACK,
+  ROT_RIGHT_360,
+  STATE_COUNT
+};
+
+State currentState = STOP ;
+
 int vitesseMin = 80;
 int vitesseMax = 255;
 int vitesse = vitesseMin;
-char currentState = 'x';
-int vitesseIncrement = 5;
-int vitesseRotationMin = 150;
+int vitesseIncrement = 17;
+int vitesseIncrementRotation = 15;
+int vitesseRotationMin = 80;
+int vitesseLow = vitesseRotationMin;
 
 void stop(void)                    //Stop
 {
@@ -30,20 +46,21 @@ void back_off (char a,char b)          //Move backward
   analogWrite (E2,b);    
   digitalWrite(M2,LOW);
 }
-void turn_L (char a,char b)             //Turn Left
+void turn_L_360 (char a,char b)             //Turn Left
 {
   analogWrite (E1,a);
   digitalWrite(M1,LOW);    
   analogWrite (E2,b);    
   digitalWrite(M2,HIGH);
-}
-void turn_R (char a,char b)             //Turn Right
+}  
+void turn_R_360 (char a,char b)             //Turn Right
 {
   analogWrite (E1,a);
   digitalWrite(M1,HIGH);    
   analogWrite (E2,b);    
   digitalWrite(M2,LOW);
-}
+} 
+
 void setup(void) 
 { 
   int i;
@@ -62,8 +79,8 @@ void loop(void)
     {
       switch(command)
       {
-      case 'w'://Move Forward
-        if (currentState == 'w')
+      case 'W'://Move Forward
+        if (currentState == FORWARD)
         {
           vitesse = vitesse + vitesseIncrement;
           if (vitesse > vitesseMax)
@@ -77,9 +94,25 @@ void loop(void)
         }
         advance (vitesse,vitesse); //move forward in max speed
         break;
+
+      case 'w':// reduce front speed
+      if (currentState == FORWARD)
+      {
+        vitesse = vitesse - vitesseIncrement;
+        if (vitesse < vitesseMin)
+        {
+          vitesse = vitesseMin;
+        }
+      }
+      else
+      {
+        vitesse = vitesseMin;
+      }
+      advance (vitesse,vitesse); //move forward in max speed
+      break;
         
-      case 's'://Move Backward
-        if (currentState == 's')
+      case 'S'://Move Backward
+        if (currentState == BACKWARD)
         {
           vitesse = vitesse + vitesseIncrement;
           if (vitesse > vitesseMax)
@@ -93,36 +126,221 @@ void loop(void)
         }
         back_off (vitesse,vitesse);   //move back in max speed
         break;
-      case 'a'://Turn Left
-      if (currentState == 'a')
+
+      case 's'://Move Backward
+        if (currentState == BACKWARD)
         {
-          vitesse = vitesse + vitesseIncrement;
-          if (vitesse > vitesseMax)
+          vitesse = vitesse - vitesseIncrement;
+          if (vitesse < vitesseMin)
           {
-            vitesse = vitesseMax;
+            vitesse = vitesseMin;
           }
         }
         else
         {
-          vitesse = vitesseRotationMin;
+          vitesse = vitesseMin;
         }
-        turn_L (vitesse,vitesse);
-        break;       
-      case 'd'://Turn Right
-      if (currentState == 'd')
-        {
-          vitesse = vitesse + vitesseIncrement;
-          if (vitesse > vitesseMax)
-          {
-            vitesse = vitesseMax;
-          }
-        }
-        else
-        {
-          vitesse = vitesseRotationMin;
-        }
-        turn_R (vitesse,vitesse);
+        back_off (vitesse,vitesse);   //move back in max speed
         break;
+        
+      case 'd'://Turn Left 360
+      /*
+      if (currentState == ROT_LEFT_360)
+        {
+          vitesse = vitesse + vitesseIncrement;
+          if (vitesse > vitesseMax)
+          {
+            vitesse = vitesseMax;
+          }
+        }
+        else
+        {
+         
+        }
+        */
+        vitesse = vitesseRotationMin *2;
+        turn_L_360 (vitesse,vitesse);
+        break;       
+      case 'a'://Turn Right
+      if (currentState == ROT_RIGHT_360)
+        /*
+         
+         {
+          vitesse = vitesse + vitesseIncrement;
+          if (vitesse > vitesseMax)
+          {
+            vitesse = vitesseMax;
+          }
+        }
+        else
+        {
+          vitesse = vitesseRotationMin;
+        }
+        */
+        vitesse = vitesseRotationMin * 2;
+        turn_R_360 (vitesse,vitesse);
+        break;
+      
+      case 'q'://Turn left 
+      if (currentState == ROT_LEFT_FRONT)
+        {
+          vitesseLow = vitesseLow + vitesseIncrementRotation;
+          
+          if (vitesseLow > vitesse)
+          {
+            vitesseLow = vitesse;
+          }
+        }
+        else
+        {
+          vitesse = vitesseRotationMin - vitesseIncrementRotation;
+          vitesseLow = vitesseRotationMin;
+        }
+        advance(vitesse,vitesseLow);
+        break;
+
+      case 'Q'://Turn left 
+      if (currentState == ROT_LEFT_FRONT)
+        {
+          vitesse = vitesse + vitesseIncrementRotation;
+          vitesseLow = vitesseLow - vitesseIncrementRotation;
+          if (vitesse > vitesseMax)
+          {
+            vitesse = vitesseMax;
+          }
+          if (vitesseLow < vitesseMin)
+          {
+            vitesseLow = vitesseRotationMin;
+          }
+        }
+        else
+        {
+          vitesse = vitesseRotationMin + vitesseIncrementRotation;
+          vitesseLow = vitesseRotationMin;
+        }
+        advance(vitesse,vitesseLow);
+        break;
+
+      case 'e'://Turn right 
+      if (currentState == ROT_RIGHT_FRONT)
+        {
+          vitesseLow = vitesseLow + vitesseIncrementRotation;
+          
+          if (vitesseLow > vitesse)
+          {
+            vitesseLow = vitesse;
+          }
+        }
+        else
+        {
+          vitesse = vitesseRotationMin - vitesseIncrementRotation;
+          vitesseLow = vitesseRotationMin;
+        }
+        advance(vitesseLow,vitesse);
+        break;
+
+      case 'E'://Turn right 
+      if (currentState == ROT_RIGHT_FRONT)
+        {
+          vitesse = vitesse + vitesseIncrementRotation;
+          vitesseLow = vitesseLow - vitesseIncrementRotation;
+          if (vitesse > vitesseMax)
+          {
+            vitesse = vitesseMax;
+          }
+          if (vitesseLow < vitesseMin)
+          {
+            vitesseLow = vitesseRotationMin;
+          }
+        }
+        else
+        {
+          vitesse = vitesseRotationMin + vitesseIncrementRotation;
+          vitesseLow = vitesseRotationMin;
+        }
+        advance(vitesseLow,vitesse);
+        break;
+        
+      case 'z'://Turn left 
+      if (currentState == ROT_LEFT_BACK)
+        {
+          vitesseLow = vitesseLow + vitesseIncrementRotation;
+         
+          if (vitesseLow > vitesse)
+          {
+            vitesseLow = vitesse;
+          }
+        }
+        else
+        {
+          vitesse = vitesseRotationMin + vitesseIncrementRotation;
+          vitesseLow = vitesseRotationMin;
+        }
+        back_off(vitesse,vitesseLow);
+        break;
+
+      case 'Z'://Turn left 
+      if (currentState == ROT_LEFT_BACK)
+        {
+          vitesse = vitesse + vitesseIncrementRotation;
+          vitesseLow = vitesseLow - vitesseIncrementRotation;
+          if (vitesse > vitesseMax)
+          {
+            vitesse = vitesseMax;
+          }
+          if (vitesseLow < vitesseMin)
+          {
+            vitesseLow = vitesseRotationMin;
+          }
+        }
+        else
+        {
+          vitesse = vitesseRotationMin + vitesseIncrementRotation;
+          vitesseLow = vitesseRotationMin;
+        }
+        back_off(vitesse,vitesseLow);
+        break;
+
+      case 'c'://Turn right 
+      if (currentState == ROT_RIGHT_BACK)
+        {
+          vitesseLow = vitesseLow + vitesseIncrementRotation;
+          
+          if (vitesseLow > vitesse)
+          {
+            vitesseLow = vitesse;
+          }
+        }
+        else
+        {
+          vitesse = vitesseRotationMin + vitesseIncrementRotation;
+          vitesseLow = vitesseRotationMin;
+        }
+        back_off(vitesseLow,vitesse);
+        break;
+
+      case 'C'://Turn right 
+      if (currentState == ROT_RIGHT_BACK)
+        {
+          vitesse = vitesse + vitesseIncrementRotation;
+          vitesseLow = vitesseLow - vitesseIncrementRotation;
+          if (vitesse > vitesseMax)
+          {
+            vitesse = vitesseMax;
+          }
+          if (vitesseLow < vitesseMin)
+          {
+            vitesseLow = vitesseRotationMin;
+          }
+        }
+        else
+        {
+          vitesse = vitesseRotationMin + vitesseIncrementRotation;
+          vitesseLow = vitesseRotationMin;
+        }
+        back_off(vitesseLow,vitesse);
+        break;
+        
       case 'x':
         stop();
         break;
@@ -130,7 +348,54 @@ void loop(void)
         stop();
         break;
       }
-      currentState = command; 
+      switch(command)
+      {
+        case 'a':
+          currentState = ROT_LEFT_360;
+          break;
+        case 'd':
+          currentState = ROT_RIGHT_360;
+          break;
+        case 'w':
+          currentState = FORWARD;
+          break;
+        case 'W':
+          currentState = FORWARD;
+          break;
+        case 's':
+          currentState = BACKWARD;
+          break;
+        case 'S':
+          currentState = BACKWARD;
+          break;
+        case 'x':
+          currentState = STOP;
+          break;
+        case 'q':
+          currentState = ROT_LEFT_FRONT;
+          break;
+        case 'Q':
+          currentState = ROT_LEFT_FRONT;
+          break;
+        case 'e':
+          currentState = ROT_RIGHT_FRONT;
+          break;
+        case 'E':
+          currentState = ROT_RIGHT_FRONT;
+          break;     
+        case 'z':
+          currentState = ROT_LEFT_BACK;
+          break;
+        case 'Z':
+          currentState = ROT_LEFT_BACK;
+          break;  
+        case 'c':
+          currentState = ROT_RIGHT_BACK;
+          break;   
+        case 'C':
+          currentState = ROT_RIGHT_BACK;
+          break;  
+      }
     }
     else 
     {
