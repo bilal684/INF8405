@@ -22,8 +22,8 @@ State currentState = STOP ;
 int vitesseMin = 80;
 int vitesseMax = 255;
 int vitesse = vitesseMin;
-int vitesseIncrement = 5;
-int vitesseIncrementRotation = 25;
+int vitesseIncrement = 17;
+int vitesseIncrementRotation = 15;
 int vitesseRotationMin = 80;
 int vitesseLow = vitesseRotationMin;
 
@@ -177,6 +177,24 @@ void loop(void)
       case 'q'://Turn left 
       if (currentState == ROT_LEFT_FRONT)
         {
+          vitesseLow = vitesseLow + vitesseIncrementRotation;
+          
+          if (vitesseLow > vitesse)
+          {
+            vitesseLow = vitesse;
+          }
+        }
+        else
+        {
+          vitesse = vitesseRotationMin - vitesseIncrementRotation;
+          vitesseLow = vitesseRotationMin;
+        }
+        advance(vitesse,vitesseLow);
+        break;
+
+      case 'Q'://Turn left 
+      if (currentState == ROT_LEFT_FRONT)
+        {
           vitesse = vitesse + vitesseIncrementRotation;
           vitesseLow = vitesseLow - vitesseIncrementRotation;
           if (vitesse > vitesseMax)
@@ -197,6 +215,24 @@ void loop(void)
         break;
 
       case 'e'://Turn right 
+      if (currentState == ROT_RIGHT_FRONT)
+        {
+          vitesseLow = vitesseLow + vitesseIncrementRotation;
+          
+          if (vitesseLow > vitesse)
+          {
+            vitesseLow = vitesse;
+          }
+        }
+        else
+        {
+          vitesse = vitesseRotationMin - vitesseIncrementRotation;
+          vitesseLow = vitesseRotationMin;
+        }
+        advance(vitesseLow,vitesse);
+        break;
+
+      case 'E'://Turn right 
       if (currentState == ROT_RIGHT_FRONT)
         {
           vitesse = vitesse + vitesseIncrementRotation;
@@ -221,6 +257,24 @@ void loop(void)
       case 'z'://Turn left 
       if (currentState == ROT_LEFT_BACK)
         {
+          vitesseLow = vitesseLow + vitesseIncrementRotation;
+         
+          if (vitesseLow > vitesse)
+          {
+            vitesseLow = vitesse;
+          }
+        }
+        else
+        {
+          vitesse = vitesseRotationMin + vitesseIncrementRotation;
+          vitesseLow = vitesseRotationMin;
+        }
+        back_off(vitesse,vitesseLow);
+        break;
+
+      case 'Z'://Turn left 
+      if (currentState == ROT_LEFT_BACK)
+        {
           vitesse = vitesse + vitesseIncrementRotation;
           vitesseLow = vitesseLow - vitesseIncrementRotation;
           if (vitesse > vitesseMax)
@@ -241,6 +295,24 @@ void loop(void)
         break;
 
       case 'c'://Turn right 
+      if (currentState == ROT_RIGHT_BACK)
+        {
+          vitesseLow = vitesseLow + vitesseIncrementRotation;
+          
+          if (vitesseLow > vitesse)
+          {
+            vitesseLow = vitesse;
+          }
+        }
+        else
+        {
+          vitesse = vitesseRotationMin + vitesseIncrementRotation;
+          vitesseLow = vitesseRotationMin;
+        }
+        back_off(vitesseLow,vitesse);
+        break;
+
+      case 'C'://Turn right 
       if (currentState == ROT_RIGHT_BACK)
         {
           vitesse = vitesse + vitesseIncrementRotation;
@@ -295,15 +367,27 @@ void loop(void)
         case 'q':
           currentState = ROT_LEFT_FRONT;
           break;
+        case 'Q':
+          currentState = ROT_LEFT_FRONT;
+          break;
         case 'e':
           currentState = ROT_RIGHT_FRONT;
-          break;   
+          break;
+        case 'E':
+          currentState = ROT_RIGHT_FRONT;
+          break;     
         case 'z':
           currentState = ROT_LEFT_BACK;
-          break;   
+          break;
+        case 'Z':
+          currentState = ROT_LEFT_BACK;
+          break;  
         case 'c':
           currentState = ROT_RIGHT_BACK;
           break;   
+        case 'C':
+          currentState = ROT_RIGHT_BACK;
+          break;  
       }
     }
     else 
