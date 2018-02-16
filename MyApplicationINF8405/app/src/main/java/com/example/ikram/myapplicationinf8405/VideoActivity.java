@@ -40,7 +40,7 @@ public class VideoActivity extends Activity {
 
     // Server port and thread
     public static final int SERVERPORT = 5050;
-    public static final String SERVER_IP = "132.207.186.11";
+    public static final String SERVER_IP = "10.200.11.26";
 
     ClientThread clientThread;
     Thread thread;
@@ -62,15 +62,16 @@ public class VideoActivity extends Activity {
     double bottomIntervalX;
 
     // number of interval and intervals
-    double numberOfInterval = 35.0;
+    double numberOfInterval = 35.0; //TODO ICI
 
     // number to divide max and min to set the X range to stop
-    double stopinterval = 4.0;
+    double stopInterval = 4.0;
 
     double minIntervalValue;
     double maxIntervalValue;
 
-    double lastValue = 0.0;
+    double lastValueWS = 0.0;
+    double lastValueEQ = 0.0;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,8 +109,8 @@ public class VideoActivity extends Activity {
         minIntervalValue = minAcceleration/numberOfInterval;
         maxIntervalValue = maxAcceleration/numberOfInterval;
 
-        topIntervalX = maxAcceleration/stopinterval;
-        bottomIntervalX = minAcceleration/stopinterval;
+        topIntervalX = maxAcceleration/stopInterval;
+        bottomIntervalX = minAcceleration/stopInterval;
 
         // Initialize and start thread
         clientThread = new ClientThread();
@@ -165,90 +166,103 @@ public class VideoActivity extends Activity {
             linear_acceleration[1] = event.values[1] ;
             linear_acceleration[2] = event.values[2] ;
 
-            //Loop acceleration in XYZ
-            for (int i = 0; i < linear_acceleration.length; i++){
+            double m = Math.max(linear_acceleration[0], posXYZ[0]);
+            double stopValue;
 
-                // Find the max value between the new position and the initial device position
-                // Calculate the difference between them
-                double m = Math.max(linear_acceleration[i], posXYZ[i]);
-                double sendValue;
-
-                if (m == linear_acceleration[i]){
-                    sendValue = m - posXYZ[i];
-                }
-                else{
-                    sendValue = m - linear_acceleration[i];
-                }
-
-                if(linear_acceleration[i] < posXYZ[i]){
-                    if(i == 1 && sendValue > 2.0){
-                        //TODO Decide value
-                        //Log.d("direction a", String.valueOf(sendValue));
-                        clientThread.sendMessage("d");
-                    }
-                    else if(i == 0)
-                    {
-                        if (sendValue > maxAcceleration)
-                        {
-                            sendValue = maxAcceleration;
-                        }
-
-                        double currentValue = sendValue/maxIntervalValue;
-
-                        if (currentValue < topIntervalX){
-                            clientThread.sendMessage("x");
-                        }
-                        else {
-                            currentValue = Math.floor(currentValue);
-
-                            if (currentValue != lastValue) {
-                                if (currentValue > lastValue) {
-                                    //Log.d("direction BIG W", String.valueOf(sendValue)  + " " + String.valueOf(lastValue) + " " + String.valueOf(currentValue));
-                                    clientThread.sendMessage("W");
-                                } else {
-                                    //Log.d("direction SMALL w", String.valueOf(sendValue) + " " + String.valueOf(lastValue) + " " + String.valueOf(currentValue));
-                                    clientThread.sendMessage("w");
-                                }
-                            }
-                        }
-                        lastValue = currentValue;
-                    }
-                }
-                else{
-                    if(i == 1 && sendValue > 2.0){
-                        //TODO Decide value
-                        //Log.d("direction d", String.valueOf(sendValue));
-                        clientThread.sendMessage("a");
-                    }
-                    else if (i == 0)
-                    {
-                        if (sendValue > minAcceleration)
-                        {
-                            sendValue = minAcceleration;
-                        }
-
-                        double currentValue = sendValue/minIntervalValue;
-
-                        if(currentValue < bottomIntervalX){
-                            clientThread.sendMessage("x");
-                        }
-                        else {
-                            currentValue = Math.floor(currentValue);
-
-                            if (currentValue != lastValue) {
-                                if (currentValue > lastValue) {
-                                    //Log.d("direction BIG S", String.valueOf(sendValue) + " " + String.valueOf(lastValue) + " " + String.valueOf(currentValue));
-                                    clientThread.sendMessage("S");
-                                } else {
-                                    //Log.d("direction SMALL s", String.valueOf(sendValue) + " " + String.valueOf(lastValue) + " " + String.valueOf(currentValue));
-                                    clientThread.sendMessage("s");
-                                }
-                            }
-                        }
-                        lastValue = currentValue;
-                    }
-                }
+            if (m == linear_acceleration[0]){
+                stopValue = m - posXYZ[0];
             }
+            else{
+                stopValue = m - linear_acceleration[0];
+            }
+
+            if(Math.abs(linear_acceleration[1]) <= 2.0 && stopValue < topIntervalX && stopValue < bottomIntervalX)
+            {
+                clientThread.sendMessage("x");
+            }
+
+                if (Math.abs(linear_acceleration[1]) > 2.0) // Pritorite pour tourner
+                {
+
+                    // QEAD
+
+                    if (linear_acceleration[1] > posXYZ[1]) // droite
+                    {
+                        double sendValue = linear_acceleration[1] - posXYZ[1];
+                        sendValue = Math.floor(sendValue);
+
+                        if (sendValue >= 8.0) {
+                            sendValue = 8.0;
+                            if (sendValue != lastValueEQ) {
+                                clientThread.sendMessage("d");
+                            }
+                        } else {
+                            if (sendValue > lastValueEQ) {
+                                clientThread.sendMessage("E");
+
+                            } else if (sendValue < lastValueEQ) {
+                                clientThread.sendMessage("e");
+                            }
+                        }
+                        lastValueEQ = sendValue;
+                    } else // gauche
+                    {
+                        double sendValue = posXYZ[1] - linear_acceleration[1];
+                        sendValue = Math.floor(sendValue);
+
+                        if (sendValue >= 8.0) {
+                            sendValue = 8.0;
+                            if (sendValue != lastValueEQ) {
+                                clientThread.sendMessage("a");
+                            }
+                        } else {
+                            if (sendValue > lastValueEQ) {
+                                clientThread.sendMessage("Q");
+
+                            } else if (sendValue < lastValueEQ) {
+                                clientThread.sendMessage("q");
+                            }
+                        }
+                        lastValueEQ = sendValue;
+                    }
+                } else // priorite avancer
+                {
+                    // WS
+                    if (linear_acceleration[0] > posXYZ[0]) // reculer
+                    {
+                        double sendValue = linear_acceleration[0] - posXYZ[0];
+                        sendValue = Math.floor(sendValue);
+
+                        if (sendValue < bottomIntervalX) {
+                            clientThread.sendMessage("x");
+                        } else {
+                            if (sendValue > lastValueWS) {
+                                clientThread.sendMessage("S");
+
+                            } else if (sendValue < lastValueWS) {
+                                clientThread.sendMessage("s");
+                            }
+                        }
+
+                        lastValueWS = sendValue;
+                    } else // avancer
+                    {
+                        double sendValue = posXYZ[0] - linear_acceleration[0];
+                        sendValue = Math.floor(sendValue);
+
+                        if (sendValue < topIntervalX) {
+                            clientThread.sendMessage("x");
+                        } else {
+                            if (sendValue > lastValueWS) {
+                                clientThread.sendMessage("W");
+
+                            } else if (sendValue < lastValueWS) {
+                                clientThread.sendMessage("w");
+                            }
+                        }
+                        lastValueWS = sendValue;
+                    }
+                }
         }
     };
 
