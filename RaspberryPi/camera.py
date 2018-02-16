@@ -10,23 +10,19 @@ from threading import Condition
 from http import server
 
 PAGE="""\
-<html>
-<head>
-<title>Raspberry Pi - Surveillance Camera</title>
-</head>
-<body>
-<center><h1>Raspberry Pi - Surveillance Camera</h1></center>
-<center><img src="stream.mjpg" width="640" height="480"></center>
-</body>
-</html>
-"""
+    <html>
+    <body bgcolor="#000000">
+    <img src="stream.mjpg" width="640" height="480">
+    </body>
+    </html>
+    """
 
 class StreamingOutput(object):
     def __init__(self):
         self.frame = None
         self.buffer = io.BytesIO()
         self.condition = Condition()
-
+    
     def write(self, buf):
         if buf.startswith(b'\xff\xd8'):
             # New frame, copy the existing buffer's content and notify all
@@ -71,11 +67,11 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
                     self.wfile.write(b'\r\n')
             except Exception as e:
                 logging.warning(
-                    'Removed streaming client %s: %s',
-                    self.client_address, str(e))
-        else:
-            self.send_error(404)
-            self.end_headers()
+                                'Removed streaming client %s: %s',
+                                self.client_address, str(e))
+else:
+    self.send_error(404)
+    self.end_headers()
 
 class StreamingServer(socketserver.ThreadingMixIn, server.HTTPServer):
     allow_reuse_address = True
