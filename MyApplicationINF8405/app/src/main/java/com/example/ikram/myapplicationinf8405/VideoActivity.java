@@ -199,8 +199,10 @@ public class VideoActivity extends Activity {
                         } else {
                             if (sendValue > lastValueEQ) {
                                 clientThread.sendMessage("E");
+                                clientThread.sendMessage("E");
 
                             } else if (sendValue < lastValueEQ) {
+                                clientThread.sendMessage("e");
                                 clientThread.sendMessage("e");
                             }
                         }
@@ -218,8 +220,10 @@ public class VideoActivity extends Activity {
                         } else {
                             if (sendValue > lastValueEQ) {
                                 clientThread.sendMessage("Q");
+                                clientThread.sendMessage("Q");
 
                             } else if (sendValue < lastValueEQ) {
+                                clientThread.sendMessage("q");
                                 clientThread.sendMessage("q");
                             }
                         }
@@ -238,8 +242,9 @@ public class VideoActivity extends Activity {
                         } else {
                             if (sendValue > lastValueWS) {
                                 clientThread.sendMessage("S");
-
+                                clientThread.sendMessage("S");
                             } else if (sendValue < lastValueWS) {
+                                clientThread.sendMessage("s");
                                 clientThread.sendMessage("s");
                             }
                         }
@@ -255,8 +260,10 @@ public class VideoActivity extends Activity {
                         } else {
                             if (sendValue > lastValueWS) {
                                 clientThread.sendMessage("W");
+                                clientThread.sendMessage("W");
 
                             } else if (sendValue < lastValueWS) {
+                                clientThread.sendMessage("w");
                                 clientThread.sendMessage("w");
                             }
                         }
