@@ -3,10 +3,10 @@ import sys
 import socket
 from time import sleep
 
-ser = serial.Serial('/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A100Q8UX-if00-port0')
+serial = serial.Serial('/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A100Q8UX-if00-port0')
 
-HOST = '192.168.50.33' #this is your localhost
-PORT = 8888
+HOST = '132.207.186.11'
+PORT = 5050
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 #socket.socket: must use to create a socket.
@@ -23,7 +23,6 @@ except socket.error as err:
 
 print 'Socket Bind Success!'
 
-
 #listen(): This method sets up and start TCP listener.
 s.listen(10)
 print 'Socket is now listening'
@@ -32,11 +31,13 @@ conn, addr = s.accept()
 print 'Connect with ' + addr[0] + ':' + str(addr[1])
 
 while 1:
-    
     recvCommand = conn.recv(64)
     
-    ser.write(recvCommand)
+    if not recvCommand :
+        serial.write('x')
+        print '\nClient disconnected'
+        print 'Socket is now listening'
+        conn, addr = s.accept()
     
+    serial.write(recvCommand)
     print recvCommand
-
-s.close()

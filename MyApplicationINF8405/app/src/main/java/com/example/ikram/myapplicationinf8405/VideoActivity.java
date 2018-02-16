@@ -20,6 +20,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import android.os.StrictMode;
 import android.view.Gravity;
+import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -40,7 +41,7 @@ public class VideoActivity extends Activity {
 
     // Server port and thread
     public static final int SERVERPORT = 5050;
-    public static final String SERVER_IP = "132.207.186.11";
+    public static final String SERVER_IP = "132.207.186.11"; //10.200.26.68
 
     ClientThread clientThread;
     Thread thread;
@@ -76,6 +77,7 @@ public class VideoActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         //mv = new VideoView(this);
         setContentView(R.layout.activity_video_view);
