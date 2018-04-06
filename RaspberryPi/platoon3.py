@@ -9,6 +9,7 @@ camera = PiCamera()
 camera.resolution = (640, 480)
 camera.framerate = 32
 camera.rotation = 180
+camera.brightness = 60
 rawCapture = PiRGBArray(camera, size=(640, 480))
 done = False
 
@@ -32,6 +33,8 @@ track_window = None
 roi = None
 hsv_roi = None
 mask = None
+green1 = np.uint8([[[0, 0, 0]]])
+green2 = np.uint8([[[50, 255, 50]]])
 roi_hist = None
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
     img = frame.array
@@ -43,8 +46,8 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         # set up the ROI for tracking
         roi = img[int(r):int(r+h), int(c):int(c+w)]
         hsv_roi =  cv.cvtColor(roi, cv.COLOR_BGR2HSV)
-        mask = cv.inRange(hsv_roi, np.array((0., 60.,32.)), np.array((180.,255.,255.)))
-        roi_hist = cv.calcHist([hsv_roi],[1],mask,[180],[0,180])
+        mask = cv.inRange(hsv_roi, cv.cvtColor(green1, cv.COLOR_BGR2HSV), cv.cvtColor(green2, cv.COLOR_BGR2HSV))   #cv.inRange(hsv_roi, np.array((0., 60.,32.)), np.array((180.,255.,255.)))
+        roi_hist = cv.calcHist([hsv_roi],[0],mask,[180],[0,180])
         cv.normalize(roi_hist,roi_hist,0,255,cv.NORM_MINMAX)
         done = True
     

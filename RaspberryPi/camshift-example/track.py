@@ -5,6 +5,8 @@
 import numpy as np
 import argparse
 import cv2
+from picamera import PiCamera
+import time
 
 # initialize the current frame of the video, along with the list of
 # ROI points along with whether or not this is input mode
@@ -59,8 +61,8 @@ def main():
 	# keep looping over the frames
 	while True:
 		# grab the current frame
-		(grabbed, frame) = camera.read()
-
+		(grabbed, readFrame) = camera.read()
+		frame = cv2.flip(readFrame, -1)
 		# check to see if we have reached the end of the
 		# video
 		if not grabbed:
@@ -76,11 +78,11 @@ def main():
 			# apply cam shift to the back projection, convert the
 			# points to a bounding box, and then draw them
 			(r, roiBox) = cv2.CamShift(backProj, roiBox, termination)
-			pts = np.int0(cv2.cv.BoxPoints(r))
+			pts = np.int0(cv2.boxPoints(r))
 			cv2.polylines(frame, [pts], True, (0, 255, 0), 2)
 
 		# show the frame and record if the user presses a key
-		cv2.imshow("frame", frame)
+		cv2.imshow("frame",frame)
 		key = cv2.waitKey(1) & 0xFF
 
 		# handle if the 'i' key is pressed, then go into ROI
