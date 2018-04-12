@@ -97,7 +97,7 @@ def main():
 	while True:
 		# grab the current frame
 		(grabbed, readFrame) = camera.read()
-		frame = readFrame #cv2.flip(readFrame, -1)
+		frame = cv2.flip(readFrame, -1)
 		# check to see if we have reached the end of the
 		# video
 		if not grabbed:
