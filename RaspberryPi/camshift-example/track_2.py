@@ -162,7 +162,7 @@ def main():
 
 			# if the 'q' key is pressed, stop the loop
 			if key == ord("q"):
-			break
+				break
 		else:
 			counter = counter + 1
 
