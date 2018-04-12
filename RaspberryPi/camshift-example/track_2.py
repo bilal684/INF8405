@@ -80,7 +80,7 @@ def main():
 
 	# otherwise, load the video
 	#else:
-	camera = cv2.VideoCapture(args["video"])
+	camera = cv2.VideoCapture(0)
 
 	# setup the mouse callback
 	cv2.namedWindow("frame")
