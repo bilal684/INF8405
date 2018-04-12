@@ -11,7 +11,7 @@ import time
 # initialize the current frame of the video, along with the list of
 # ROI points along with whether or not this is input mode
 frame = None
-roiPts = [(134,63), (164, 356), (488, 346), (495, 35)]
+roiPts = [(132,59), (164, 351), (484, 342), (491, 32)]
 inputMode = False
 
 #def selectROI(event, x, y, flags, param):
