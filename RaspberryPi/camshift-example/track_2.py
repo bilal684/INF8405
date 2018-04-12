@@ -154,7 +154,7 @@ def main():
 		#	roiBox = (tl[0], tl[1], br[0], br[1])
 
 		# if the 'q' key is pressed, stop the loop
-		elif key == ord("q"):
+		if key == ord("q"):
 			break
 
 	# cleanup the camera and close any open windows
