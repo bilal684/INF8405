@@ -33,7 +33,7 @@ def init(frame):
 	# indicate that we are in input mode and clone the
 	# frame
 	#inputMode = True
-	global roiHist, roiBox
+	global roiHist, roiBox, roiPts
 	orig = frame.copy()
 
 	# keep looping until 4 reference ROI points have
