@@ -62,14 +62,8 @@ public class VideoActivity extends Activity {
     double topIntervalX;
     double bottomIntervalX;
 
-    // number of interval and intervals
-    double numberOfInterval = 35.0; //TODO ICI
-
     // number to divide max and min to set the X range to stop
     double stopInterval = 4.0;
-
-    double minIntervalValue;
-    double maxIntervalValue;
 
     double lastValueWS = 0.0;
     double lastValueEQ = 0.0;
@@ -107,9 +101,6 @@ public class VideoActivity extends Activity {
             minAcceleration = extras.getDouble("minAcceleration");
             posXYZ = extras.getDoubleArray("posXYZ");
         }
-
-        minIntervalValue = minAcceleration/numberOfInterval;
-        maxIntervalValue = maxAcceleration/numberOfInterval;
 
         topIntervalX = maxAcceleration/stopInterval;
         bottomIntervalX = minAcceleration/stopInterval;
