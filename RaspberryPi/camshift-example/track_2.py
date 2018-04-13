@@ -88,6 +88,7 @@ def main():
 			key = cv2.waitKey(1) & 0xFF
 
 			if key == ord("q"):
+				serial.write('x'.encode())
 				break
 		else:
 			(grabbed, readFrame) = camera.read()
