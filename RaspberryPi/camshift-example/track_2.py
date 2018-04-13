@@ -98,7 +98,8 @@ def main():
 	cv2.destroyAllWindows()
 
 def moveRobot(pts):
-	serial.write('w')
+	string = 'w'
+	serial.write(string.encode())
 
 if __name__ == "__main__":
 	main()
