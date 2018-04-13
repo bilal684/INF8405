@@ -11,7 +11,7 @@ import time
 # initialize the current frame of the video, along with the list of
 # ROI points along with whether or not this is input mode
 frame = None
-roiPts = [(172,104), (183, 294), (421, 291), (406, 99)]
+roiPts = [(263,130), (265, 214), (383, 211), (380, 125)]
 inputMode = False
 isInit = False
 
