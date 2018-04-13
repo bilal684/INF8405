@@ -2,13 +2,15 @@ import numpy as np
 import argparse
 import cv2
 import time
-
+import serial
 # initialize the current frame of the video, along with the list of
 # ROI points along with whether or not this is input mode
 frame = None
 roiPts = [(189,101), (192, 298), (411, 302), (408, 105)]
 inputMode = False
 isInit = False
+
+serial = serial.Serial('/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A100Q21Z-if00-port0')
 
 def init(frame):
 	global roiHist, roiBox, roiPts, isInit
@@ -77,6 +79,7 @@ def main():
 				# points to a bounding box, and then draw them
 				(r, roiBox) = cv2.CamShift(backProj, roiBox, termination)
 				pts = np.int0(cv2.boxPoints(r))
+				moveRobot(pts)
 				print(pts)
 				cv2.polylines(frame, [pts], True, (0, 255, 0), 2)
 
@@ -93,6 +96,9 @@ def main():
 
 	camera.release()
 	cv2.destroyAllWindows()
+
+def moveRobot(pts):
+	serial.write("w")
 
 if __name__ == "__main__":
 	main()
