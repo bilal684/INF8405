@@ -11,7 +11,7 @@ import time
 # initialize the current frame of the video, along with the list of
 # ROI points along with whether or not this is input mode
 frame = None
-roiPts = [(263,130), (265, 214), (383, 211), (380, 125)]
+roiPts = [(189,101), (192, 298), (411, 302), (408, 105)]
 inputMode = False
 isInit = False
 
@@ -100,7 +100,8 @@ def main():
 	while True:
 		if not isInit and counter == 10:
 			(grabbed, readFrame) = camera.read()
-			init(readFrame)
+			frameInit = cv2.flip(readFrame, -1)
+			init(frameInit)
 		if isInit:
 			# grab the current frame
 			(grabbed, readFrame) = camera.read()
@@ -164,9 +165,10 @@ def main():
 			if key == ord("q"):
 				break
 		else:
-			(grabbed, readFrame) = camera.read()
-			cv2.imshow("frame",readFrame)
-			counter = counter + 1
+                    (grabbed, readFrame) = camera.read()
+                    frame = cv2.flip(readFrame, -1)
+                    cv2.imshow("frame",readFrame)
+                    counter = counter + 1
 
 
 	# cleanup the camera and close any open windows
