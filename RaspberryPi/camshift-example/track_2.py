@@ -57,10 +57,6 @@ def main():
 	#counter = 0
 
 	while True:
-		#if not isInit and counter == 10:
-		#	(grabbed, readFrame) = camera.read()
-		#	frameInit = cv2.flip(readFrame, -1)
-		#	init(frameInit)
 		if isInit:
 			# grab the current frame
 			(grabbed, readFrame) = camera.read()
@@ -81,6 +77,7 @@ def main():
 				# points to a bounding box, and then draw them
 				(r, roiBox) = cv2.CamShift(backProj, roiBox, termination)
 				pts = np.int0(cv2.boxPoints(r))
+				print(pts)
 				cv2.polylines(frame, [pts], True, (0, 255, 0), 2)
 
 			# show the frame and record if the user presses a key
@@ -93,11 +90,7 @@ def main():
 			(grabbed, readFrame) = camera.read()
 			frameInit = cv2.flip(readFrame, -1)
 			init(frameInit)
-		#else:
-         #           (grabbed, readFrame) = camera.read()
-          #          frame = cv2.flip(readFrame, -1)
-           #         cv2.imshow("frame",readFrame)
-                    #counter = counter + 1
+
 	camera.release()
 	cv2.destroyAllWindows()
 
