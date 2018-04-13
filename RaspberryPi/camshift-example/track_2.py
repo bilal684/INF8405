@@ -3,6 +3,7 @@ import argparse
 import cv2
 import time
 import serial
+import math
 # initialize the current frame of the video, along with the list of
 # ROI points along with whether or not this is input mode
 frame = None
@@ -11,8 +12,18 @@ inputMode = False
 isInit = False
 width = 640
 height = 480
-
+currentState = 2
 serial = serial.Serial('/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A100Q21Z-if00-port0')
+
+
+class turningState(Enum):
+	TS0 = 0
+	TS1 = 1
+	TS2 = 2
+	TS3 = 3
+	TS4 = 4
+
+turningState = turningState()
 
 def init(frame):
 	global roiHist, roiBox, roiPts, isInit
@@ -111,21 +122,51 @@ def getMinMax(pts):
 	return ptMin, ptMax
 
 def moveRobot(pts):
-	global width, height
+	global width, height, turningState, currentState
 	ptMin, ptMax = getMinMax(pts)
-	print("ptMin")
-	print(ptMin)
-	print("ptMax")
-	print(ptMax)
+	#print("ptMin")
+	#print(ptMin)
+	#print("ptMax")
+	#print(ptMax)
 	incX = int((ptMax[0] - ptMin[0])/2)
 	incY = int((ptMax[1] - ptMin[1])/2)
 	ptMilieu = [ptMin[0] + incX, ptMin[1] + incY]
-	if(ptMilieu[0] < int(width/2) - 20):
-		print("q")
+
+	if currentState == turningState.TS0:
+		if ptMilieu[0] > 128:
+			currentState = turningState.TS1
 		serial.write("Q".encode())
-	elif(ptMilieu[0] > int(width/2) + 20):
-		print("e")
+	elif currentState == turningState.TS1:
+		if ptMilieu[0] < 128:
+			currentState = turningState.TS0
+		elif ptMilieu[0] > 256:
+			currentState = turningState.TS2
+		serial.write("Q".encode())
+	elif currentState == turningState.TS2:
+		if ptMilieu[0] < 256:
+			currentState = turningState.TS1
+		elif ptMilieu[0] > 384:
+			currentState = turningState.TS3
+		if int(math.sqrt(ptMax[0]**2 + ptMax[1]**2)) < 400:
+			serial.write("W".encode())
+		else:
+			serial.write("x".encode())
+	elif currentState == turningState.TS3:
+		if ptMilieu[0] < 384:
+			currentState = turningState.TS2
+		elif ptMilieu[0] > 512:
+			currentState = turningState.TS4
 		serial.write("E".encode())
+	elif currentState == turningState.TS4:
+		if ptMilieu[0] < 512:
+			currentState = turningState.TS3
+		serial.write("E".encode())
+	#if(ptMilieu[0] < int(width/2) - 20):
+	#	print("q")
+	#	serial.write("Q".encode())
+	#elif(ptMilieu[0] > int(width/2) + 20):
+	#	print("e")
+	#	serial.write("E".encode())
 	
 	
 	#string = 'w'
