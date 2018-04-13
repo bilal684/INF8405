@@ -164,6 +164,8 @@ def main():
 			if key == ord("q"):
 				break
 		else:
+			(grabbed, readFrame) = camera.read()
+			cv2.imshow("frame",readFrame)
 			counter = counter + 1
 
 
