@@ -115,7 +115,7 @@ def moveRobot(pts):
 	ptMin, ptMax = getMinMax(pts)
 	incX = int((ptMax[0] - ptMin[0])/2)
 	incY = int((ptMax[1] - ptMin[1])/2)
-	ptMilieu = [ptMin[0] + incX, ptMin[1] + incY)]
+	ptMilieu = [ptMin[0] + incX, ptMin[1] + incY]
 	if(ptMilieu[0] < int(width/2) - 20):
 		serial.write("e".encode())
 	elif(ptMilieu[0] > int(width/2) + 20):
