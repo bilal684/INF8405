@@ -4,7 +4,7 @@ import cv2
 import time
 import serial
 import math
-import enum
+from enum import Enum
 # initialize the current frame of the video, along with the list of
 # ROI points along with whether or not this is input mode
 frame = None
