@@ -9,6 +9,8 @@ frame = None
 roiPts = [(189,101), (192, 298), (411, 302), (408, 105)]
 inputMode = False
 isInit = False
+width = 640
+height = 480
 
 serial = serial.Serial('/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A100Q21Z-if00-port0')
 
@@ -80,7 +82,7 @@ def main():
 				(r, roiBox) = cv2.CamShift(backProj, roiBox, termination)
 				pts = np.int0(cv2.boxPoints(r))
 				moveRobot(pts)
-				print(pts)
+				
 				cv2.polylines(frame, [pts], True, (0, 255, 0), 2)
 
 			# show the frame and record if the user presses a key
@@ -98,9 +100,30 @@ def main():
 	camera.release()
 	cv2.destroyAllWindows()
 
+def getMinMax(pts):
+	ptMax = pts[0]
+	ptMin = pts[0]
+	for pt in pts:
+		if ptMin[0] < pt[0] and ptMin[1] < pt[1]:
+			ptMin = pt
+		if pt[0] > ptMax[0] and pt[1] > ptMax[1]:
+			ptMax = pt
+	return ptMin, ptMax
+
 def moveRobot(pts):
-	string = 'w'
-	serial.write(string.encode())
+	global width, height
+	ptMin, ptMax = getMinMax(pts)
+	incX = int((ptMax[0] - ptMin[0])/2)
+	incY = int((ptMax[1] - ptMin[1])/2)
+	ptMilieu = [ptMin[0] + incX, ptMin[1] + incY)]
+	if(ptMilieu[0] < int(width/2) - 20):
+		serial.write("e".encode())
+	elif(ptMilieu[0] > int(width/2) + 20):
+		serial.write("q".encode())
+	
+	
+	#string = 'w'
+	#serial.write(string.encode())
 
 if __name__ == "__main__":
 	main()
