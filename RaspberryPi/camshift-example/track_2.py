@@ -104,7 +104,7 @@ def getMinMax(pts):
 	ptMax = pts[0]
 	ptMin = pts[0]
 	for pt in pts:
-		if ptMin[0] < pt[0] and ptMin[1] < pt[1]:
+		if pt[0] < ptMin[0] and pt[1] < ptMin[0] :
 			ptMin = pt
 		if pt[0] > ptMax[0] and pt[1] > ptMax[1]:
 			ptMax = pt
