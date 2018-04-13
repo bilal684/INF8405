@@ -113,6 +113,10 @@ def getMinMax(pts):
 def moveRobot(pts):
 	global width, height
 	ptMin, ptMax = getMinMax(pts)
+	print("ptMin")
+	print(ptMin)
+	print("ptMax")
+	print(ptMax)
 	incX = int((ptMax[0] - ptMin[0])/2)
 	incY = int((ptMax[1] - ptMin[1])/2)
 	ptMilieu = [ptMin[0] + incX, ptMin[1] + incY]
