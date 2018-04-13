@@ -98,7 +98,7 @@ def main():
 
 	# keep looping over the frames
 	while True:
-		if not isInit and counter == 1000:
+		if not isInit and counter == 10:
 			(grabbed, readFrame) = camera.read()
 			init(readFrame)
 		if isInit:
