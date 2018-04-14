@@ -17,7 +17,7 @@ currentState = 2
 serial = serial.Serial('/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A100Q21Z-if00-port0')
 
 
-class turningState(Enum):
+class turningState():
 	TS0 = 0
 	TS1 = 1
 	TS2 = 2
