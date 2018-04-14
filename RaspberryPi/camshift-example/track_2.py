@@ -15,6 +15,7 @@ width = 640
 height = 480
 currentState = 2
 serial = serial.Serial('/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A100Q21Z-if00-port0')
+counterW = 100
 
 
 class turningState():
@@ -123,7 +124,7 @@ def getMinMax(pts):
 	return ptMin, ptMax
 
 def moveRobot(pts):
-	global width, height, turningState, currentState
+	global width, height, turningState, currentState, counterW
 	ptMin, ptMax = getMinMax(pts)
 	#print("ptMin")
 	#print(ptMin)
@@ -144,14 +145,15 @@ def moveRobot(pts):
 			currentState = turningState.TS2
 		serial.write("Q".encode())
 	elif currentState == turningState.TS2:
-		print(int(math.sqrt(((ptMax[0] - ptMin[0]) ** 2) + ((ptMax[1] - ptMin[1]) ** 2))))
-		
 		if ptMilieu[0] < 256:
 			currentState = turningState.TS1
 		elif ptMilieu[0] > 384:
 			currentState = turningState.TS3
-		if (int(math.sqrt(((ptMax[0] - ptMin[0]) ** 2) + ((ptMax[1] - ptMin[1]) ** 2))) < 250):
-			serial.write("W".encode())
+		if int(math.sqrt(((ptMax[0] - ptMin[0]) ** 2) + ((ptMax[1] - ptMin[1]) ** 2))) < 250:
+			if counterW <= 100:
+				serial.write("W".encode())
+			else:
+				counter = counter + 1
 		else:
 			serial.write("x".encode())
 	elif currentState == turningState.TS3:
