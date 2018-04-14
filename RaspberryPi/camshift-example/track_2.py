@@ -124,7 +124,7 @@ def getMinMax(pts):
 	return ptMin, ptMax
 
 def moveRobot(pts):
-	global width, height, turningState, currentState
+	global width, height, turningState, currentState, counterW
 	ptMin, ptMax = getMinMax(pts)
 	#print("ptMin")
 	#print(ptMin)
