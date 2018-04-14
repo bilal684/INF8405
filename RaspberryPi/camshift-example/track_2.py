@@ -15,7 +15,7 @@ width = 640
 height = 480
 currentState = 2
 serial = serial.Serial('/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A100Q21Z-if00-port0')
-counterW = 50
+counterW = 10
 
 
 class turningState():
@@ -150,7 +150,7 @@ def moveRobot(pts):
 		elif ptMilieu[0] > 384:
 			currentState = turningState.TS3
 		if (int(math.sqrt(((ptMax[0] - ptMin[0]) ** 2) + ((ptMax[1] - ptMin[1]) ** 2))) < 250 and int(math.sqrt(((ptMax[0] - ptMin[0]) ** 2) + ((ptMax[1] - ptMin[1]) ** 2))) > 50):
-			if counterW >= 50:
+			if counterW >= 10:
 				serial.write("W".encode())
 				counterW = 0
 			else:
