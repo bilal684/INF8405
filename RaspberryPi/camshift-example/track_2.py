@@ -138,12 +138,21 @@ def moveRobot(pts):
 		if ptMilieu[0] > 128:
 			currentState = turningState.TS1
 			serial.write("Q".encode())
+			serial.write("Q".encode())
+			serial.write("Q".encode())
+			serial.write("Q".encode())
 	elif currentState == turningState.TS1:
 		if ptMilieu[0] < 128:
 			currentState = turningState.TS0
 			serial.write("Q".encode())
+			serial.write("Q".encode())
+			serial.write("Q".encode())
+			serial.write("Q".encode())
 		elif ptMilieu[0] > 256:
 			currentState = turningState.TS2
+			serial.write("E".encode())
+			serial.write("E".encode())
+			serial.write("E".encode())
 			serial.write("E".encode())
 	elif currentState == turningState.TS2:
 		if ptMilieu[0] < 256:
@@ -161,12 +170,21 @@ def moveRobot(pts):
 		if ptMilieu[0] < 384:
 			currentState = turningState.TS2
 			serial.write("Q".encode())
+			serial.write("Q".encode())
+			serial.write("Q".encode())
+			serial.write("Q".encode())
 		elif ptMilieu[0] > 512:
 			currentState = turningState.TS4
+			serial.write("E".encode())
+			serial.write("E".encode())
+			serial.write("E".encode())
 			serial.write("E".encode())
 	elif currentState == turningState.TS4:
 		if ptMilieu[0] < 512:
 			currentState = turningState.TS3
+			serial.write("E".encode())
+			serial.write("E".encode())
+			serial.write("E".encode())
 			serial.write("E".encode())
 	#if(ptMilieu[0] < int(width/2) - 20):
 	#	print("q")
