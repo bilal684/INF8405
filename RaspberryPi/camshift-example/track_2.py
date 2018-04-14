@@ -144,12 +144,12 @@ def moveRobot(pts):
 			currentState = turningState.TS2
 		serial.write("Q".encode())
 	elif currentState == turningState.TS2:
+		print(int(math.sqrt(ptMax[0]**2 + ptMax[1]**2)))
 		if ptMilieu[0] < 256:
 			currentState = turningState.TS1
 		elif ptMilieu[0] > 384:
 			currentState = turningState.TS3
-		print(str(int(math.sqrt(ptMax[0]**2 + ptMax[1]**2)))
-		if int(math.sqrt(ptMax[0]**2 + ptMax[1]**2)) < 400:
+		if (int(math.sqrt(ptMax[0]**2 + ptMax[1]**2)) < 400):
 			serial.write("W".encode())
 		else:
 			serial.write("x".encode())
