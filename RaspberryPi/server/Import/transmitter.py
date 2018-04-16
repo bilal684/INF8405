@@ -47,8 +47,8 @@ class TransmitterThread(threading.Thread):
 					conn.close()
 					self.logger.info("Server is listening ...[CTRL] + [C] to quit")
 			else:
-				self.serial.write('x'.encode())
-				self.logger.debug('x')
+				#self.serial.write('x'.encode())
+				#self.logger.debug('x')
 				time.sleep(1)
 		
 	def stop(self):
