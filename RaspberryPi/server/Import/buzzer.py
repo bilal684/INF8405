@@ -7,10 +7,11 @@ import threading
 class BuzzerThread(threading.Thread):
 	
 			
-	def __init__(self, buzzerQueue, logger): 
+	def __init__(self, DistanceList, logger): 
 			threading.Thread.__init__(self)
-			self.buzzerQueue = buzzerQueue
+			self.DistanceList = DistanceList
 			self.logger = logger
+			self.STOP_DISTANCE = 8.0
 			self.stop_event = threading.Event()
 			self.setup()
 
@@ -29,19 +30,22 @@ class BuzzerThread(threading.Thread):
 			p.stop()
 
 	def run(self):
+		p = GPIO.PWM(self.GPIO_BUZZER, 440)
 		while not self.stopRequest():
-			if not self.buzzerQueue.empty():
-				distance = self.buzzerQueue.get()
-				p = GPIO.PWM(self.GPIO_BUZZER, 440)
-				p.start(0.5)
-				maxValue = 2
-				if maxValue >= len(self.SONG):
-					maxValue = len(self.SONG) - 1
-				elif maxValue < 5:
-					maxValue = 5
-				for t in range(0, maxValue):	
-					self.playTone(p, self.SONG[t])
-				self.logger.debug("Play buzzer value : ", str(maxValue))
+			distance = self.DistanceList[0]
+			if distance > self.STOP_DISTANCE :
+				p.stop()
+				time.sleep(0.2)
+				continue			
+			p.start(0.5)
+			maxValue = 1
+			if maxValue >= len(self.SONG):
+				maxValue = len(self.SONG) - 1
+			elif maxValue < 5:
+				maxValue = 5
+			for t in range(0, maxValue):	
+				self.playTone(p, self.SONG[t])
+			self.logger.debug("Play buzzer value : " + str(maxValue))
 		self.destroy()
 	
 	

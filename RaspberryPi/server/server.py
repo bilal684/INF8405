@@ -52,10 +52,9 @@ def main(argv):
 	mySocket.listen(1)
 	logger.info('Server is listening ...')
 	
-	buzzerQueue = queue.Queue()
 	DistanceList = []
 	conList = []
-	buzzer = BuzzerThread(buzzerQueue, logger)
+	buzzer = BuzzerThread(DistanceList, logger)
 	buzzer.setDaemon(True)
 	buzzer.start()
 	sonar = SonarThread(conList, DistanceList, buzzerQueue, logger)
