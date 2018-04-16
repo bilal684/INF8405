@@ -9,15 +9,16 @@ import time
 
 class SonarThread(threading.Thread):
 	
-	def __init__(self, sonarQueue, buzzerQueue, logger): 
+	def __init__(self, DistanceList, buzzerQueue, logger): 
 		threading.Thread.__init__(self)
-		self.sonarQueue = sonarQueue
+		self.DistanceList = DistanceList
 		self.buzzerQueue = buzzerQueue
 		self.logger = logger
 		self.stop_event = threading.Event()
 		self.WARN_DISTANCE = 24.0
 		self.CRIT_DISTANCE = 16.0
 		self.STOP_DISTANCE = 8.0
+		self.DistanceList.append(self.WARN_DISTANCE)
 		self.setup()
 
 	def run(self):
@@ -26,8 +27,7 @@ class SonarThread(threading.Thread):
 			distance = self.distance()
 			formattedDistance = format(distance, '.1f')
 			if distance < self.STOP_DISTANCE:
-				self.logger.info("Stop Distance : " + formattedDistance)
-				self.sonarQueue.put(distance)
+				self.logger.info("Stop Distance : " + formattedDistance)				
 				self.buzzerQueue.put(distance)
 				GPIO.output(self.GPIO_RED_LIGHT, True)
 			elif distance < self.CRIT_DISTANCE:
@@ -36,7 +36,7 @@ class SonarThread(threading.Thread):
 			elif distance < self.WARN_DISTANCE:
 				self.logger.info("Warning Distance : " + formattedDistance)
 				GPIO.output(self.GPIO_BLUE_LIGHT, True)
-			time.sleep(1)
+			self.DistanceList[0] = distance
 		self.destroy()
 		
 	def distance(self):

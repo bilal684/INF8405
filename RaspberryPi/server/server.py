@@ -53,15 +53,15 @@ def main(argv):
 	logger.info('Server is listening ...')
 	
 	buzzerQueue = queue.Queue()
-	sonarQueue = queue.Queue()
+	DistanceList = []
 	conList = []
 	buzzer = BuzzerThread(buzzerQueue, logger)
 	buzzer.setDaemon(True)
 	buzzer.start()
-	sonar = SonarThread(sonarQueue, buzzerQueue, logger)
+	sonar = SonarThread(DistanceList, buzzerQueue, logger)
 	sonar.setDaemon(True)
 	sonar.start()
-	transmitter = TransmitterThread(serialPort, conList, sonarQueue, logger)
+	transmitter = TransmitterThread(serialPort, conList, DistanceList, logger)
 	transmitter.setDaemon(True)
 	transmitter.start()
 	while True:

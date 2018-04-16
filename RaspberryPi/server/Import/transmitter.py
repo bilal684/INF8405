@@ -8,30 +8,28 @@ import time
 
 class TransmitterThread(threading.Thread):
 
-	def __init__(self, serialPort, conList, sonarQueue, logger): 
+	def __init__(self, serialPort, conList, DistanceList, logger): 
 		threading.Thread.__init__(self)
 		self.serial = serialPort
 		self.conList = conList
-		self.queue = sonarQueue
+		self.DistanceList = DistanceList
 		self.logger = logger
 		self.stop_event = threading.Event()
+		self.STOP_DISTANCE = 8.0
 
 	def run(self):
 		while not self.stopRequest():			
 			if self.conList:
-				if len(self.conList) > 1:
-					for conn in range(0, len(self.conList)-2):
-						self.conList.remove(conn)
-				connection = self.conList[0]
+				connection = self.conList[len(self.conList)-1]
 				try:
 					recvCommand = connection.recv(1024).decode()
 					if not recvCommand:
 						self.serial.write('x'.encode())
 						continue
-					if not self.queue.empty():
-						distance = self.queue.get()
+					if self.DistanceList:
+						distance = self.DistanceList[0]
 						com = recvCommand.lower()
-						if com != 'z' and com != 's' and com != 'c':
+						if distance <= self.STOP_DISTANCE and com != 'z' and com != 's' and com != 'c' and com != 'x':
 							self.serial.write('x'.encode())
 							self.logger.debug('x'.encode())
 							continue
