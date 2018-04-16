@@ -25,19 +25,19 @@ class SonarThread(threading.Thread):
 			distance = self.distance()
 			formattedDistance = format(distance, '.1f')
 			if distance < self.WARN_DISTANCE:
-				self.logger("Warning Distance : " + str(formattedDistance))
+				self.logger.info("Warning Distance : " + formattedDistance)
 				self.switchOffRgbLed()
-				GPIO.output(GPIO_BLUE_LIGHT, True)
+				GPIO.output(self.GPIO_BLUE_LIGHT, True)
 			elif distance < self.CRIT_DISTANCE:
-				self.logger("Critical Distance : " + str(formattedDistance))
+				self.logger.info("Critical Distance : " + formattedDistance)
 				self.switchOffRgbLed()
-				GPIO.output(GPIO_GREEN_LIGHT, True)
+				GPIO.output(self.GPIO_GREEN_LIGHT, True)
 			elif distance < self.STOP_DISTANCE:
-				self.logger("Stop Distance : " + str(formattedDistance))
+				self.logger.info("Stop Distance : " + formattedDistance)
 				self.sonarQueue.put(distance)
 				self.buzzerQueue.put(distance)
 				self.switchOffRgbLed()
-				GPIO.output(GPIO_RED_LIGHT, True)
+				GPIO.output(self.GPIO_RED_LIGHT, True)
 			time.sleep(1)
 		self.destroy()
 		
