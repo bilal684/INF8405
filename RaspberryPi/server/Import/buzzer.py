@@ -7,10 +7,10 @@ import threading
 class BuzzerThread(threading.Thread):
 	
 	#GPIO Mode (BOARD / BCM)
-	GPIO.setmode(GPIO.BOARD) # Numbers GPIOs by physical location
+	GPIO.setmode(GPIO.BCM) # Numbers GPIOs by physical location
 	 
 	#set GPIO Pins
-	GPIO_BUZZER = 10
+	GPIO_BUZZER = 15
 	
 	SPEED = 1 
 	
