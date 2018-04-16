@@ -57,7 +57,7 @@ def main(argv):
 	buzzer = BuzzerThread(DistanceList, logger)
 	buzzer.setDaemon(True)
 	buzzer.start()
-	sonar = SonarThread(conList, DistanceList, buzzerQueue, logger)
+	sonar = SonarThread(conList, DistanceList, logger)
 	sonar.setDaemon(True)
 	sonar.start()
 	transmitter = TransmitterThread(serialPort, conList, DistanceList, logger)
