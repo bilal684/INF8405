@@ -30,7 +30,7 @@ class BuzzerThread(threading.Thread):
 
 	def run(self):
 		while not self.stopRequest():
-			if not self.queue.empty():
+			if not self.buzzerQueue.empty():
 				distance = self.queue.get()
 				p = GPIO.PWM(self.GPIO_BUZZER, 440)
 				p.start(0.5)

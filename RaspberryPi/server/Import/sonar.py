@@ -25,15 +25,15 @@ class SonarThread(threading.Thread):
 			distance = self.distance()
 			formattedDistance = format(distance, '.1f')
 			if distance < self.WARN_DISTANCE:
-				self.logger("Warning Distance : " + formattedDistance)
+				self.logger("Warning Distance : " + str(formattedDistance))
 				self.switchOffRgbLed()
 				GPIO.output(GPIO_BLUE_LIGHT, True)
 			elif distance < self.CRIT_DISTANCE:
-				self.logger("Critical Distance : " + formattedDistance)
+				self.logger("Critical Distance : " + str(formattedDistance))
 				self.switchOffRgbLed()
 				GPIO.output(GPIO_GREEN_LIGHT, True)
 			elif distance < self.STOP_DISTANCE:
-				self.logger("Stop Distance : " + formattedDistance)
+				self.logger("Stop Distance : " + str(formattedDistance))
 				self.sonarQueue.put(distance)
 				self.buzzerQueue.put(distance)
 				self.switchOffRgbLed()
@@ -43,21 +43,21 @@ class SonarThread(threading.Thread):
 		
 	def distance(self):
 		# set Trigger to HIGH
-		GPIO.output(GPIO_TRIGGER, True)
+		GPIO.output(self.GPIO_TRIGGER, True)
 
 		# set Trigger after 0.01ms to LOW
 		time.sleep(0.00001)
-		GPIO.output(GPIO_TRIGGER, False)
+		GPIO.output(self.GPIO_TRIGGER, False)
 
 		StartTime = time.time()
 		StopTime = time.time()
 
 		# save StartTime
-		while GPIO.input(GPIO_ECHO) == 0:
+		while GPIO.input(self.GPIO_ECHO) == 0:
 			StartTime = time.time()
 
 		# save time of arrival
-		while GPIO.input(GPIO_ECHO) == 1:
+		while GPIO.input(self.GPIO_ECHO) == 1:
 			StopTime = time.time()
 
 		# time difference between start and arrival
@@ -69,9 +69,9 @@ class SonarThread(threading.Thread):
 		return distance
 	
 	def switchOffRgbLed(self):
-		GPIO.output(GPIO_BLUE_LIGHT, False)
-		GPIO.output(GPIO_GREEN_LIGHT, False)
-		GPIO.output(GPIO_RED_LIGHT, False)
+		GPIO.output(self.GPIO_BLUE_LIGHT, False)
+		GPIO.output(self.GPIO_GREEN_LIGHT, False)
+		GPIO.output(self.GPIO_RED_LIGHT, False)
 		
 	def setup(self):
 		#GPIO Mode (BOARD / BCM)
