@@ -31,14 +31,15 @@ class TransmitterThread(threading.Thread):
 					and com != 'e' and com != 'z' and com != 'c' and com != 'x':
 						recvCommand = connection.recv(1024).decode()
 						com = recvCommand.lower()					
-					if self.DistanceList:
-						distance = self.DistanceList[0]						
-						if distance <= self.STOP_DISTANCE and com != 'z' and com != 's' and com != 'c':
-							self.serial.write('x'.encode())
-							self.logger.debug('x')
-							continue
-					self.serial.write(recvCommand.encode())					
-					self.logger.debug(recvCommand)
+					#if self.DistanceList:
+					distance = self.DistanceList[0]						
+					if distance <= self.STOP_DISTANCE and com != 'z' and com != 's' and com != 'c':
+						self.serial.write('x'.encode())
+						self.logger.debug('x')
+						#continue
+					else:
+						self.serial.write(recvCommand.encode())					
+						self.logger.debug(recvCommand)
 				except socket.error as e:
 					self.serial.write('x'.encode())
 					self.logger.debug('x')

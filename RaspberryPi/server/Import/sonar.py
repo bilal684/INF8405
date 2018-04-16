@@ -39,6 +39,7 @@ class SonarThread(threading.Thread):
 				#self.logger.info("Warning Distance : " + formattedDistance)
 				GPIO.output(self.GPIO_BLUE_LIGHT, True)
 			self.DistanceList[0] = distance
+			time.sleep(0.2)
 		self.destroy()
 		
 	def distance(self):
