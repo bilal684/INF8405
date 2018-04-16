@@ -3,9 +3,16 @@ import RPi.GPIO as GPIO
 import serial
 import logging
 import threading
-import queue
+from enum import Enum
 import time
 
+
+class State(Enum):
+
+	SECURE = 0
+	WARNING = 1
+	CRITICAL = 2
+	STOP = 3
 
 
 class SonarThread(threading.Thread):
@@ -21,6 +28,7 @@ class SonarThread(threading.Thread):
 		self.CRIT_DISTANCE = 30.0
 		self.STOP_DISTANCE = 20.0
 		self.DistanceList.append(self.WARN_DISTANCE)
+		self.currentState = State(0).name
 		self.setup()
 
 	def run(self):
@@ -32,16 +40,21 @@ class SonarThread(threading.Thread):
 			distance = self.distance()
 			formattedDistance = format(distance, '.1f')
 			if distance < self.STOP_DISTANCE:
-				self.serial.write('x'.encode())
-				self.logger.debug('Mehdi')
+				if self.currentState != State(3).name:
+					self.serial.write('x'.encode())
 				#self.logger.info("Stop Distance : " + formattedDistance)
-				GPIO.output(self.GPIO_RED_LIGHT, True)				
+				GPIO.output(self.GPIO_RED_LIGHT, True)
+				self.currentState = State(3).name			
 			elif distance < self.CRIT_DISTANCE:
 				#self.logger.info("Critical Distance : " + formattedDistance)
 				GPIO.output(self.GPIO_GREEN_LIGHT, True)
+				self.currentState = State(2).name
 			elif distance < self.WARN_DISTANCE:
 				#self.logger.info("Warning Distance : " + formattedDistance)
 				GPIO.output(self.GPIO_BLUE_LIGHT, True)
+				self.currentState = State(1).name
+			else:
+				self.currentState = State(0).name
 			self.DistanceList[0] = distance
 			time.sleep(0.2)
 		self.destroy()
