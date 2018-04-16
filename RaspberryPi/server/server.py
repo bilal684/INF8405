@@ -1,12 +1,15 @@
 #!/usr/bin/python3
 import serial
 import sys
+import os
 import socket
 import logging
 import threading
 import queue
 import netifaces
 import time
+import datetime
+import platform
 from Import.sonar import SonarThread
 from Import.transmitter import TransmitterThread
 from Import.buzzer import BuzzerThread
@@ -24,10 +27,10 @@ def main(argv):
 	ethernet = ''
 	if platform.system().lower() == 'linux':
 		try:
-			ethernet = 'eth0'
+			ethernet = 'wlan0'
 			netifaces.ifaddresses(ethernet)			
 		except:
-				ethernet = 'wlo1'
+				ethernet = 'eth0'
 				netifaces.ifaddresses(ethernet)
 	elif platform.system().lower() == 'darwin':
 		ethernet = 'en0'
@@ -70,13 +73,13 @@ def main(argv):
 			break
 	mySocket.close()
 
-buzzer.stop()
-buzzer.join()
-sonar.stop()
-sonar.join()
-transmitter.stop()
-transmitter.join()
-sys.exit(0)
+	buzzer.stop()
+	buzzer.join()
+	sonar.stop()
+	sonar.join()	
+	transmitter.stop()
+	transmitter.join()
+	sys.exit(0)
 
 
 def getLogger(logPath, logSuffix):
