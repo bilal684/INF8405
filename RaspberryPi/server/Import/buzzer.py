@@ -31,17 +31,17 @@ class BuzzerThread(threading.Thread):
 	def run(self):
 		while not self.stopRequest():
 			if not self.buzzerQueue.empty():
-				distance = self.queue.get()
+				distance = self.buzzerQueue.get()
 				p = GPIO.PWM(self.GPIO_BUZZER, 440)
 				p.start(0.5)
-				maxValue = 6
+				maxValue = 2
 				if maxValue >= len(self.SONG):
 					maxValue = len(self.SONG) - 1
 				elif maxValue < 5:
 					maxValue = 5
-				for t in range(0, maxValue):				
+				for t in range(0, maxValue):	
 					self.playTone(p, self.SONG[t])
-				self.logger.debug("Play buzzer value : ", maxValue)
+				#self.logger.debug("Play buzzer value : ", str(maxValue))
 		self.destroy()
 	
 	

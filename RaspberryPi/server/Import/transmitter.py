@@ -23,12 +23,16 @@ class TransmitterThread(threading.Thread):
 				connection = self.conList[len(self.conList)-1]
 				try:
 					recvCommand = connection.recv(1024).decode()
+					com = recvCommand.lower()
 					if not recvCommand:
 						self.serial.write('x'.encode())
 						continue
+					while com != 'a' and com != 'd' and com != 'w' and com != 's' and com != 'q'\
+					and com != 'e' and com != 'z' and com != 'c':
+						recvCommand = connection.recv(1024).decode()
+						com = recvCommand.lower()					
 					if self.DistanceList:
-						distance = self.DistanceList[0]
-						com = recvCommand.lower()
+						distance = self.DistanceList[0]						
 						if distance <= self.STOP_DISTANCE and com != 'z' and com != 's' and com != 'c' and com != 'x':
 							self.serial.write('x'.encode())
 							self.logger.debug('x')
