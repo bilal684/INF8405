@@ -16,7 +16,8 @@ class TransmitterThread(threading.Thread):
 		self.DistanceList = DistanceList
 		self.logger = logger
 		self.stop_event = threading.Event()
-		self.STOP_DISTANCE = 15.0
+		self.STOP_DISTANCE = 20.0
+		self.CRIT_DISTANCE = 30.0
 
 	def run(self):
 		while not self.stopRequest():			
@@ -28,19 +29,20 @@ class TransmitterThread(threading.Thread):
 					if not recvCommand:
 						self.serial.write('x'.encode())
 						continue
-					#while com != 'a' and com != 'd' and com != 'w' and com != 's' and com != 'q'\
-					#and com != 'e' and com != 'z' and com != 'c' and com != 'x':
-						#recvCommand = connection.recv(1024).decode()
-						#com = recvCommand.lower()					
-					#if self.DistanceList:
-					distance = self.DistanceList[0]						
-					if distance <= self.STOP_DISTANCE and com != 'z' and com != 's' and com != 'c':
-						self.serial.write('x'.encode())
-						self.logger.debug('Mehdi')
-						#continue
-					else:
-						self.serial.write(recvCommand.encode())					
-						self.logger.debug(recvCommand)
+					while com != 'a' and com != 'd' and com != 'w' and com != 's' and com != 'q'\
+					and com != 'e' and com != 'z' and com != 'c' and com != 'x':
+						recvCommand = connection.recv(1024).decode()
+						com = recvCommand.lower()					
+					if self.DistanceList:
+						distance = self.DistanceList[0]						
+						if distance <= self.STOP_DISTANCE and com != 'z' and com != 's' and com != 'c':
+							self.serial.write('x'.encode())
+							self.logger.debug('x')
+							continue
+						elif distance <= self.CRIT_DISTANCE and com != 'z' and com != 's' and com != 'c':
+							recvCommand = recvCommand.lower()
+					self.serial.write(recvCommand.encode())					
+					self.logger.debug(recvCommand)
 				except socket.error as e:
 					self.serial.write('x'.encode())
 					self.logger.debug('x')

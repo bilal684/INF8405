@@ -11,7 +11,7 @@ class BuzzerThread(threading.Thread):
 			threading.Thread.__init__(self)
 			self.DistanceList = DistanceList
 			self.logger = logger
-			self.STOP_DISTANCE = 15.0
+			self.STOP_DISTANCE = 20.0
 			self.stop_event = threading.Event()
 			self.setup()
 
