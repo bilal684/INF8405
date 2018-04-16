@@ -36,15 +36,11 @@ class TransmitterThread(threading.Thread):
 					self.serial.write(recvCommand.encode())					
 					self.logger.debug(recvCommand)
 				except socket.error as e:
-					if not self.queue.empty():
-						distance = self.queue.get()
 					self.logger.info(str(e) + ": connection is interrupted ")
 					self.conList.remove(conn)
 					conn.close()
 					self.logger.info("Server is listening ...[CTRL] + [C] to quit")
 			else:
-				if not self.queue.empty():
-					distance = self.queue.get()
 				time.sleep(1)
 		
 	def stop(self):
