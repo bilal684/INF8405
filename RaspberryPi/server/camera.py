@@ -10,19 +10,19 @@ from threading import Condition
 from http import server
 
 PAGE="""\
-    <html>
-    <body bgcolor="#000000">
-    <img src="stream.mjpg" width="640" height="480">
-    </body>
-    </html>
-    """
+<html>
+<body bgcolor="#000000">
+<img src="stream.mjpg" width="640" height="480">
+</body>
+</html>
+"""
 
 class StreamingOutput(object):
     def __init__(self):
         self.frame = None
         self.buffer = io.BytesIO()
         self.condition = Condition()
-    
+
     def write(self, buf):
         if buf.startswith(b'\xff\xd8'):
             # New frame, copy the existing buffer's content and notify all
@@ -67,17 +67,17 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
                     self.wfile.write(b'\r\n')
             except Exception as e:
                 logging.warning(
-                                'Removed streaming client %s: %s',
-                                self.client_address, str(e))
-else:
-    self.send_error(404)
-    self.end_headers()
+                    'Removed streaming client %s: %s',
+                    self.client_address, str(e))
+        else:
+            self.send_error(404)
+            self.end_headers()
 
 class StreamingServer(socketserver.ThreadingMixIn, server.HTTPServer):
     allow_reuse_address = True
     daemon_threads = True
 
-with picamera.PiCamera(resolution='640x480', framerate=24) as camera:
+with picamera.PiCamera(resolution='640x480', framerate=30) as camera:
     output = StreamingOutput()
     #Uncomment the next line to change your Pi's Camera rotation (in degrees)
     camera.rotation = 180
@@ -88,3 +88,5 @@ with picamera.PiCamera(resolution='640x480', framerate=24) as camera:
         server.serve_forever()
     finally:
         camera.stop_recording()
+
+
