@@ -67,7 +67,7 @@ def main(argv):
 	while True:
 		try:
 			connection, cAddress = mySocket.accept()
-			connection.settimeout(5)
+			#connection.settimeout(5)
 			conList.append(connection)
 		except KeyboardInterrupt:
 			break

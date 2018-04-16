@@ -41,7 +41,7 @@ class TransmitterThread(threading.Thread):
 					self.logger.debug(recvCommand)
 				except socket.error as e:
 					self.logger.info(str(e) + ": connection is interrupted ")
-					self.conList.remove(conn)
+					self.conList.remove(connection)
 					conn.close()
 					self.logger.info("Server is listening ...[CTRL] + [C] to quit")
 			else:
