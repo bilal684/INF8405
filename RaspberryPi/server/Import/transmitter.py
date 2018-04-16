@@ -15,7 +15,7 @@ class TransmitterThread(threading.Thread):
 		self.DistanceList = DistanceList
 		self.logger = logger
 		self.stop_event = threading.Event()
-		self.STOP_DISTANCE = 8.0
+		self.STOP_DISTANCE = 15.0
 
 	def run(self):
 		while not self.stopRequest():			
@@ -40,11 +40,15 @@ class TransmitterThread(threading.Thread):
 					self.serial.write(recvCommand.encode())					
 					self.logger.debug(recvCommand)
 				except socket.error as e:
+					self.serial.write('x'.encode())
+					self.logger.debug('x')
 					self.logger.info(str(e) + ": connection is interrupted ")
 					self.conList.remove(connection)
 					conn.close()
 					self.logger.info("Server is listening ...[CTRL] + [C] to quit")
 			else:
+				self.serial.write('x'.encode())
+				self.logger.debug('x')
 				time.sleep(1)
 		
 	def stop(self):

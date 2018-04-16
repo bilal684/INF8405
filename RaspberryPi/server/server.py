@@ -54,9 +54,9 @@ def main(argv):
 	
 	DistanceList = []
 	conList = []
-	#buzzer = BuzzerThread(DistanceList, logger)
-	#buzzer.setDaemon(True)
-	#buzzer.start()
+	buzzer = BuzzerThread(DistanceList, logger)
+	buzzer.setDaemon(True)
+	buzzer.start()
 	sonar = SonarThread(conList, DistanceList, logger)
 	sonar.setDaemon(True)
 	sonar.start()
@@ -74,8 +74,8 @@ def main(argv):
 			break
 	mySocket.close()
 
-	#buzzer.stop()
-	#buzzer.join()
+	buzzer.stop()
+	buzzer.join()
 	sonar.stop()
 	sonar.join()	
 	transmitter.stop()

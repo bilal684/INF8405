@@ -15,9 +15,9 @@ class SonarThread(threading.Thread):
 		self.DistanceList = DistanceList
 		self.logger = logger
 		self.stop_event = threading.Event()
-		self.WARN_DISTANCE = 24.0
-		self.CRIT_DISTANCE = 16.0
-		self.STOP_DISTANCE = 8.0
+		self.WARN_DISTANCE = 35.0
+		self.CRIT_DISTANCE = 25.0
+		self.STOP_DISTANCE = 15.0
 		self.DistanceList.append(self.WARN_DISTANCE)
 		self.setup()
 
