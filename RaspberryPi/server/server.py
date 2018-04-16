@@ -1,43 +1,100 @@
+#!/usr/bin/python3
 import serial
 import sys
 import socket
-from time import sleep
+import logging
+import threading
+import queue
+import netifaces
+import time
+from Import.sonar import SonarThread
+from Import.transmitter import TransmitterThread
+from Import.buzzer import BuzzerThread
 
-serial = serial.Serial('/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A100Q8UX-if00-port0')
 
-HOST = '132.207.186.11'
-PORT = 5050
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#socket.socket: must use to create a socket.
-#socket.AF_INET: Address Format, Internet = IP Addresses.
-#socket.SOCK_STREAM: two-way, connection-based byte streams.
-print 'socket created'
 
-#Bind socket to Host and Port
-try:
-    s.bind((HOST, PORT))
-except socket.error as err:
-    print 'Bind Failed, Error Code: ' + str(err[0]) + ', Message: ' + err[1]
-    sys.exit()
+def main(argv):
+	TIMEOUT = 5
+	PORT = 5050
+	logSuffix = '.log'
+	logPath = './Log'
+	logger = getLogger(logPath, logSuffix)
+	serialPort = serial.Serial('/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_A100Q8UX-if00-port0')
+	ethernet = ''
+	if platform.system().lower() == 'linux':
+		try:
+			ethernet = 'eth0'
+			netifaces.ifaddresses(ethernet)			
+		except:
+				ethernet = 'wlo1'
+				netifaces.ifaddresses(ethernet)
+	elif platform.system().lower() == 'darwin':
+		ethernet = 'en0'
+		netifaces.ifaddresses(ethernet)		
+	else:
+		logger.warn('system platform: ' + platform.system() + ' does not support this program')
+		sys.exit(1)
+	host = ''
+	host = netifaces.ifaddresses(ethernet)[netifaces.AF_INET][0]['addr']	
+	mySocket = socket.socket()
+	mySocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+	try:
+		mySocket.bind((host,PORT))
+	except OSError:
+		logger.error("The port number" + str(PORT) + "is in use")
 
-print 'Socket Bind Success!'
+	#listen(): This method sets up and start TCP listener.
+	mySocket.listen(1)
+	logger.info('Socket is now listening')
+	
+	buzzerQueue = queue.Queue()
+	sonarQueue = queue.Queue()
+	conList = []
+	buzzer = BuzzerThread(buzzerQueue, logger)
+	buzzer.setDaemon(True)
+	buzzer.start()
+	sonar = SonarThread(sonarQueue, buzzerQueue, logger)
+	sonar.setDaemon(True)
+	sonar.start()
+	transmitter = TransmitterThread(serialPort, conList, sonarQueue, logger)
+	transmitter.setDaemon(True)
+	transmitter.start()
+	while True:
+		try:
+			connection, cAddress = mySocket.accept()
+			conList.append(connection)
+		except KeyboardInterrupt:
+			break
+		except socket.error as e:
+			break
+	mySocket.close()
 
-#listen(): This method sets up and start TCP listener.
-s.listen(10)
-print 'Socket is now listening'
+buzzer.stop()
+buzzer.join()
+sonar.stop()
+sonar.join()
+transmitter.stop()
+transmitter.join()
+sys.exit(0)
 
-conn, addr = s.accept()
-print 'Connect with ' + addr[0] + ':' + str(addr[1])
 
-while 1:
-    recvCommand = conn.recv(64)
-    
-    if not recvCommand :
-        serial.write('x')
-        print '\nClient disconnected'
-        print 'Socket is now listening'
-        conn, addr = s.accept()
-    
-    serial.write(recvCommand)
-    print recvCommand
+def getLogger(logPath, logSuffix):
+	formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(message)s')
+	consoleHdlr = logging.StreamHandler(sys.stdout)	
+	consoleHdlr.setFormatter(formatter)	
+	logFileName = str(datetime.datetime.now()) + logSuffix
+	if not os.path.exists(logPath):
+		os.makedirs(logPath)	
+	fileHdlr = logging.FileHandler(os.path.join(logPath, logFileName))
+	fileHdlr.setFormatter(formatter)
+	rootLogger = logging.getLogger()
+	rootLogger.addHandler(consoleHdlr)
+	rootLogger.addHandler(fileHdlr)
+	logger = logging.getLogger("myLogger")
+	logger.setLevel(logging.DEBUG)
+	return logger
+
+
+if __name__ == "__main__":
+   main(sys.argv[1:])
