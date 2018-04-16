@@ -39,7 +39,8 @@ def main(argv):
 		logger.warn('system platform: ' + platform.system() + ' does not support this program')
 		sys.exit(1)
 	host = ''
-	host = netifaces.ifaddresses(ethernet)[netifaces.AF_INET][0]['addr']	
+	host = netifaces.ifaddresses(ethernet)[netifaces.AF_INET][0]['addr']
+	logger.info('Server IP address : ' + host)
 	mySocket = socket.socket()
 	mySocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 	try:
@@ -49,7 +50,7 @@ def main(argv):
 
 	#listen(): This method sets up and start TCP listener.
 	mySocket.listen(1)
-	logger.info('Socket is now listening')
+	logger.info('Server is listening ...')
 	
 	buzzerQueue = queue.Queue()
 	sonarQueue = queue.Queue()

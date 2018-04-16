@@ -34,7 +34,7 @@ class TransmitterThread(threading.Thread):
 						if com != 'z' and com != 's' and com != 'c':
 							self.serial.write('x')
 							continue
-					self.serial.write(recvCommand)					
+					self.serial.write(recvCommand.encode())					
 					self.logger.debug(recvCommand)
 				except socket.error as e:
 					if not self.queue.empty():

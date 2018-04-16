@@ -92,11 +92,11 @@ class SonarThread(threading.Thread):
 		GPIO.setup(self.GPIO_BLUE_LIGHT, GPIO.OUT)
 		
 	def destroy(self):
-		GPIO.output(self.GPIO_TRIGGER, GPIO.HIGH)
-		GPIO.output(self.GPIO_ECHO, GPIO.HIGH)
-		GPIO.output(self.GPIO_RED_LIGHT, GPIO.HIGH)
-		GPIO.output(self.GPIO_GREEN_LIGHT, GPIO.HIGH)
-		GPIO.output(self.GPIO_BLUE_LIGHT, GPIO.HIGH)
+		#GPIO.output(self.GPIO_TRIGGER, GPIO.HIGH)
+		#GPIO.output(self.GPIO_ECHO, GPIO.HIGH)
+		#GPIO.output(self.GPIO_RED_LIGHT, GPIO.HIGH)
+		#GPIO.output(self.GPIO_GREEN_LIGHT, GPIO.HIGH)
+		#GPIO.output(self.GPIO_BLUE_LIGHT, GPIO.HIGH)
 		GPIO.cleanup()
 		
 	

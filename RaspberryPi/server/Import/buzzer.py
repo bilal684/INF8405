@@ -88,7 +88,7 @@ class BuzzerThread(threading.Thread):
 		GPIO.setup(self.GPIO_BUZZER, GPIO.OUT)
 		
 	def destroy(self):
-		GPIO.output(self.GPIO_BUZZER, GPIO.HIGH)
+		#GPIO.output(self.GPIO_BUZZER, GPIO.HIGH)
 		GPIO.cleanup()
 	
 		
