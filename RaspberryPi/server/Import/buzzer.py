@@ -41,7 +41,7 @@ class BuzzerThread(threading.Thread):
 					maxValue = 5
 				for t in range(0, maxValue):	
 					self.playTone(p, self.SONG[t])
-				#self.logger.debug("Play buzzer value : ", str(maxValue))
+				self.logger.debug("Play buzzer value : ", str(maxValue))
 		self.destroy()
 	
 	
