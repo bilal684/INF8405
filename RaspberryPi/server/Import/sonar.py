@@ -9,23 +9,6 @@ import time
 
 class SonarThread(threading.Thread):
 	
-	#GPIO Mode (BOARD / BCM)
-	GPIO.setmode(GPIO.BCM)
-	 
-	#set GPIO Pins
-	GPIO_TRIGGER = 23
-	GPIO_ECHO = 24
-	GPIO_RED_LIGHT = 16
-	GPIO_GREEN_LIGHT = 20
-	GPIO_BLUE_LIGHT = 21
-	 
-	#set GPIO direction (IN / OUT)
-	GPIO.setup(GPIO_TRIGGER, GPIO.OUT)
-	GPIO.setup(GPIO_ECHO, GPIO.IN)
-	GPIO.setup(GPIO_RED_LIGHT, GPIO.OUT)
-	GPIO.setup(GPIO_GREEN_LIGHT, GPIO.OUT)
-	GPIO.setup(GPIO_BLUE_LIGHT, GPIO.OUT)
-	
 	def __init__(self, sonarQueue, buzzerQueue, logger): 
 		threading.Thread.__init__(self)
 		self.sonarQueue = sonarQueue
@@ -35,6 +18,7 @@ class SonarThread(threading.Thread):
 		self.WARN_DISTANCE = 15.0
 		self.CRIT_DISTANCE = 10.0
 		self.STOP_DISTANCE = 5.0
+		self.setup()
 
 	def run(self):
 		while not self.stopRequest():
@@ -55,12 +39,7 @@ class SonarThread(threading.Thread):
 				self.switchOffRgbLed()
 				GPIO.output(GPIO_RED_LIGHT, True)
 			time.sleep(1)
-		GPIO.output(GPIO_TRIGGER, GPIO.HIGH)
-		GPIO.output(GPIO_ECHO, GPIO.HIGH)
-		GPIO.output(GPIO_RED_LIGHT, GPIO.HIGH)
-		GPIO.output(GPIO_GREEN_LIGHT, GPIO.HIGH)
-		GPIO.output(GPIO_BLUE_LIGHT, GPIO.HIGH)
-		GPIO.cleanup()
+		self.destroy()
 		
 	def distance(self):
 		# set Trigger to HIGH
@@ -93,6 +72,32 @@ class SonarThread(threading.Thread):
 		GPIO.output(GPIO_BLUE_LIGHT, False)
 		GPIO.output(GPIO_GREEN_LIGHT, False)
 		GPIO.output(GPIO_RED_LIGHT, False)
+		
+	def setup(self):
+		#GPIO Mode (BOARD / BCM)
+		GPIO.setmode(GPIO.BCM)
+		 
+		#set GPIO Pins
+		self.GPIO_TRIGGER = 23
+		self.GPIO_ECHO = 24
+		self.GPIO_RED_LIGHT = 16
+		self.GPIO_GREEN_LIGHT = 20
+		self.GPIO_BLUE_LIGHT = 21
+		 
+		#set GPIO direction (IN / OUT)
+		GPIO.setup(self.GPIO_TRIGGER, GPIO.OUT)
+		GPIO.setup(self.GPIO_ECHO, GPIO.IN)
+		GPIO.setup(self.GPIO_RED_LIGHT, GPIO.OUT)
+		GPIO.setup(self.GPIO_GREEN_LIGHT, GPIO.OUT)
+		GPIO.setup(self.GPIO_BLUE_LIGHT, GPIO.OUT)
+		
+	def destroy(self):
+		GPIO.output(self.GPIO_TRIGGER, GPIO.HIGH)
+		GPIO.output(self.GPIO_ECHO, GPIO.HIGH)
+		GPIO.output(self.GPIO_RED_LIGHT, GPIO.HIGH)
+		GPIO.output(self.GPIO_GREEN_LIGHT, GPIO.HIGH)
+		GPIO.output(self.GPIO_BLUE_LIGHT, GPIO.HIGH)
+		GPIO.cleanup()
 		
 	
 	def stop(self):
