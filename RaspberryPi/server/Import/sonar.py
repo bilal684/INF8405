@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import RPi.GPIO as GPIO
+import serial
 import logging
 import threading
 import queue
@@ -9,9 +10,10 @@ import time
 
 class SonarThread(threading.Thread):
 	
-	def __init__(self, conList, DistanceList, logger): 
+	def __init__(self, serialPort, conList, DistanceList, logger): 
 		threading.Thread.__init__(self)
 		self.conList = conList
+		self.serial = serialPort
 		self.DistanceList = DistanceList
 		self.logger = logger
 		self.stop_event = threading.Event()
@@ -30,6 +32,8 @@ class SonarThread(threading.Thread):
 			distance = self.distance()
 			formattedDistance = format(distance, '.1f')
 			if distance < self.STOP_DISTANCE:
+				self.serial.write('x'.encode())
+				self.logger.debug('Mehdi')
 				#self.logger.info("Stop Distance : " + formattedDistance)
 				GPIO.output(self.GPIO_RED_LIGHT, True)				
 			elif distance < self.CRIT_DISTANCE:
