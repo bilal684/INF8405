@@ -35,7 +35,7 @@ class TransmitterThread(threading.Thread):
 					distance = self.DistanceList[0]						
 					if distance <= self.STOP_DISTANCE and com != 'z' and com != 's' and com != 'c':
 						self.serial.write('x'.encode())
-						self.logger.debug('x')
+						self.logger.debug('Mehdi')
 						#continue
 					else:
 						self.serial.write(recvCommand.encode())					
