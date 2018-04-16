@@ -5,7 +5,6 @@
 import numpy as np
 import argparse
 import cv2
-from picamera import PiCamera
 import time
 
 # initialize the current frame of the video, along with the list of
@@ -24,6 +23,7 @@ def selectROI(event, x, y, flags, param):
 	# list of ROI points with the (x, y) location of the click
 	# and draw the circle
 	if inputMode and event == cv2.EVENT_LBUTTONDOWN and len(roiPts) < 4:
+		print(str(x) + ";" + str(y))
 		roiPts.append((x, y))
 		cv2.circle(frame, (x, y), 4, (0, 255, 0), 2)
 		cv2.imshow("frame", frame)
