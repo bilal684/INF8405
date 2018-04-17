@@ -105,6 +105,7 @@ def main():
 				pts = np.int0(cv2.boxPoints(r))
 				if DistanceList and DistanceList[0] <= STOP_DISTANCE:
 					serial.write('x'.encode())
+					print("Distance: " + str(DistanceList[0]))
 					continue
 				moveRobot(pts)
 				
