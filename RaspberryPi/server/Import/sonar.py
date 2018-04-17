@@ -1,10 +1,12 @@
 #!/usr/bin/python3
 import RPi.GPIO as GPIO
+import socket
 import serial
 import logging
 import threading
-from enum import Enum
 import time
+import sys
+from enum import Enum
 
 
 class State(Enum):
@@ -29,6 +31,7 @@ class SonarThread(threading.Thread):
 		self.STOP_DISTANCE = 20.0
 		self.DistanceList.append(self.WARN_DISTANCE)
 		self.currentState = State(0).name
+		self.REMOTE_SERVER = "www.google.com"
 		self.setup()
 
 	def run(self):
@@ -39,7 +42,11 @@ class SonarThread(threading.Thread):
 				continue
 			distance = self.distance()
 			formattedDistance = format(distance, '.1f')
-			if distance < self.STOP_DISTANCE:
+			if not self.is_connected(self.REMOTE_SERVER):
+				GPIO.output(self.GPIO_BLUE_LIGHT, True)
+				self.serial.write('x'.encode())
+				time.sleep(1)
+			elif distance < self.STOP_DISTANCE:
 				if self.currentState != State(3).name:
 					self.serial.write('x'.encode())
 				#self.logger.info("Stop Distance : " + formattedDistance)
@@ -52,11 +59,15 @@ class SonarThread(threading.Thread):
 			elif distance < self.WARN_DISTANCE:
 				#self.logger.info("Warning Distance : " + formattedDistance)
 				GPIO.output(self.GPIO_BLUE_LIGHT, True)
+				GPIO.output(self.GPIO_GREEN_LIGHT, True)
+				GPIO.output(self.GPIO_RED_LIGHT, True)
 				self.currentState = State(1).name
 			else:
 				self.currentState = State(0).name
 			self.DistanceList[0] = distance
-			time.sleep(0.2)
+			
+			time.sleep(0.2)			
+				
 		self.destroy()
 		
 	def distance(self):
@@ -117,6 +128,19 @@ class SonarThread(threading.Thread):
 		#GPIO.output(self.GPIO_BLUE_LIGHT, GPIO.HIGH)
 		GPIO.cleanup()
 		
+	
+	def is_connected(self, hostname):
+		try:
+			# see if we can resolve the host name -- tells us if there is
+			# a DNS listening
+			host = socket.gethostbyname(hostname)
+			# connect to the host -- tells us if the host is actually
+			# reachable
+			s = socket.create_connection((host, 80), 2)
+			return True
+		except:
+			pass
+		return False
 	
 	def stop(self):
 		self.stop_event.set()
