@@ -3,8 +3,10 @@ import argparse
 import cv2
 import time
 import serial
+import threading
 import math
 from enum import Enum
+from Import.sonar import SonarThread
 # initialize the current frame of the video, along with the list of
 # ROI points along with whether or not this is input mode
 frame = None
@@ -72,7 +74,14 @@ def main():
 	# along with the bounding box of the ROI
 	termination = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 10, 1)
 	#counter = 0
-
+	STOP_DISTANCE = 20.0
+	DistanceList = []
+	conList = []
+	conList.append('ok')
+	sonar = SonarThread(serial, conList, DistanceList, None)
+	sonar.setDaemon(True)
+	sonar.start()
+	
 	while True:
 		if isInit:
 			# grab the current frame
@@ -94,6 +103,9 @@ def main():
 				# points to a bounding box, and then draw them
 				(r, roiBox) = cv2.CamShift(backProj, roiBox, termination)
 				pts = np.int0(cv2.boxPoints(r))
+				if DistanceList and DistanceList[0] <= STOP_DISTANCE:
+					serial.write('x'.encode())
+					continue
 				moveRobot(pts)
 				
 				cv2.polylines(frame, [pts], True, (0, 255, 0), 2)
@@ -112,6 +124,8 @@ def main():
 
 	camera.release()
 	cv2.destroyAllWindows()
+	sonar.stop()
+	sonar.join()
 
 def getMinMax(pts):
 	ptMax = pts[0]
