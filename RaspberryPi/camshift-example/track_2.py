@@ -65,7 +65,7 @@ def main():
 	camera = cv2.VideoCapture(0)
 
 	# setup the mouse callback
-	cv2.namedWindow("frame")
+	#cv2.namedWindow("frame")
 	
 	# initialize the termination criteria for cam shift, indicating
 	# a maximum of ten iterations or movement by a least one pixel
@@ -99,7 +99,7 @@ def main():
 				cv2.polylines(frame, [pts], True, (0, 255, 0), 2)
 
 			# show the frame and record if the user presses a key
-			cv2.imshow("frame",frame)
+			#cv2.imshow("frame",frame)
 			key = cv2.waitKey(1) & 0xFF
 
 			if key == ord("q"):
