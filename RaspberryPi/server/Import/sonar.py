@@ -45,6 +45,7 @@ class SonarThread(threading.Thread):
 			if not self.is_connected(self.REMOTE_SERVER):
 				GPIO.output(self.GPIO_BLUE_LIGHT, True)
 				self.serial.write('x'.encode())
+				time.sleep(1)
 			elif distance < self.STOP_DISTANCE:
 				if self.currentState != State(3).name:
 					self.serial.write('x'.encode())
@@ -54,11 +55,12 @@ class SonarThread(threading.Thread):
 			elif distance < self.CRIT_DISTANCE:
 				#self.logger.info("Critical Distance : " + formattedDistance)
 				GPIO.output(self.GPIO_GREEN_LIGHT, True)
-				GPIO.output(self.GPIO_RED_LIGHT, True)
 				self.currentState = State(2).name
 			elif distance < self.WARN_DISTANCE:
 				#self.logger.info("Warning Distance : " + formattedDistance)
+				GPIO.output(self.GPIO_BLUE_LIGHT, True)
 				GPIO.output(self.GPIO_GREEN_LIGHT, True)
+				GPIO.output(self.GPIO_RED_LIGHT, True)
 				self.currentState = State(1).name
 			else:
 				self.currentState = State(0).name
