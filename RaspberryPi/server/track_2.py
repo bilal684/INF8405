@@ -79,8 +79,7 @@ def main():
 	conList = []
 	conList.append('ok')
 	sonar = SonarThread(serial, conList, DistanceList, None)
-	sonar.setDaemon(True)
-	sonar.start()
+	sonar.setDaemon(True)	
 	
 	while True:
 		if isInit:
@@ -105,7 +104,7 @@ def main():
 				pts = np.int0(cv2.boxPoints(r))
 				if DistanceList and DistanceList[0] <= STOP_DISTANCE:
 					serial.write('x'.encode())
-					print("Distance: " + str(DistanceList[0]))
+					#print("Distance: " + str(DistanceList[0]))
 					continue
 				moveRobot(pts)
 				
@@ -122,6 +121,7 @@ def main():
 			(grabbed, readFrame) = camera.read()
 			frameInit = cv2.flip(readFrame, -1)
 			init(frameInit)
+			sonar.start()
 
 	camera.release()
 	cv2.destroyAllWindows()
