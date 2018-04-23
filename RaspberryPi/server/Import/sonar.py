@@ -19,12 +19,13 @@ class State(Enum):
 
 class SonarThread(threading.Thread):
 	
-	def __init__(self, serialPort, conList, DistanceList, logger): 
+	def __init__(self, serialPort, conList, DistanceList, logger, isInit): 
 		threading.Thread.__init__(self)
 		self.conList = conList
 		self.serial = serialPort
 		self.DistanceList = DistanceList
 		self.logger = logger
+		self.isInit = isInit
 		self.stop_event = threading.Event()
 		self.WARN_DISTANCE = 40.0
 		self.CRIT_DISTANCE = 30.0
@@ -35,7 +36,7 @@ class SonarThread(threading.Thread):
 		self.setup()
 
 	def run(self):
-		while not self.stopRequest():
+		while not self.stopRequest() and self.isInit and self.isInit[0]:
 			self.switchOffRgbLed()			
 			if not self.conList:
 				time.sleep(1)

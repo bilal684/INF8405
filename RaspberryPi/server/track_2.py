@@ -12,7 +12,8 @@ from Import.sonar import SonarThread
 frame = None
 roiPts = [(189,101), (192, 298), (411, 302), (408, 105)]
 inputMode = False
-isInit = False
+isInit = []
+isInit[0] = False
 width = 640
 height = 480
 currentState = 2
@@ -30,7 +31,7 @@ class turningState():
 turningState = turningState()
 
 def init(frame):
-	global roiHist, roiBox, roiPts, isInit
+	global roiHist, roiBox, roiPts, isInit[0]
 	orig = frame.copy()
 
 	# determine the top-left and bottom-right points
@@ -50,7 +51,7 @@ def init(frame):
 	roiHist = cv2.calcHist([roi], [0], None, [16], [0, 180])
 	roiHist = cv2.normalize(roiHist, roiHist, 0, 255, cv2.NORM_MINMAX)
 	roiBox = (tl[0], tl[1], br[0], br[1])
-	isInit = True
+	isInit[0] = True
 
 
 def main():
@@ -62,7 +63,7 @@ def main():
 
 	# grab the reference to the current frame, list of ROI
 	# points and whether or not it is ROI selection mode
-	global frame, roiPts, inputMode, roiBox, isInit
+	global frame, roiPts, inputMode, roiBox, isInit[0]
 	
 	camera = cv2.VideoCapture(0)
 
@@ -78,11 +79,11 @@ def main():
 	DistanceList = []
 	conList = []
 	conList.append('ok')
-	sonar = SonarThread(serial, conList, DistanceList, None)
+	sonar = SonarThread(serial, conList, DistanceList, None, isInit)
 	sonar.setDaemon(True)	
 	
 	while True:
-		if isInit:
+		if isInit[0]:
 			# grab the current frame
 			(grabbed, readFrame) = camera.read()
 			frame = cv2.flip(readFrame, -1)
