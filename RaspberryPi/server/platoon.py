@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 import RPi.GPIO as GPIO
 import track_2
-LedPin   = 38
-TouchPin = 11
-ledBlue = 36
+LedPin   = 20
+TouchPin = 17
+ledBlue =  16
 
 def setup():
-        GPIO.setmode(GPIO.BOARD)       # Numbers GPIOs by physical location
+        GPIO.setmode(GPIO.BCM)       # Numbers GPIOs by physical location
         GPIO.setup(LedPin, GPIO.OUT)   # Set LedPin's mode is output
         GPIO.setup(ledBlue, GPIO.OUT) 
         GPIO.setup(TouchPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
